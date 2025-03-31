@@ -4,7 +4,7 @@ import {Simulation, SimulationBounds, SpreadInfectionEvent} from "./simulation.t
 
 abstract class AgentState {
     abstract tick(deltaTime: number): void
-    abstract kind: AgentStateKind
+    abstract kind: AgentStateKin
 }
 
 type AgentStateKind = "Healthy" | "Infected"
