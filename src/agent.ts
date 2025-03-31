@@ -1,11 +1,6 @@
 import { Noise } from "noisejs";
 import { v4 as uuidv4 } from 'uuid'
-import {Simulation, SpreadInfectionEvent} from "./simulation.ts";
-
-export interface SimulationBounds {
-    width: number
-    height: number
-}
+import {Simulation, SimulationBounds, SpreadInfectionEvent} from "./simulation.ts";
 
 abstract class AgentState {
     abstract tick(deltaTime: number): void

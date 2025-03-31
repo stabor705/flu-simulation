@@ -1,5 +1,11 @@
-import {Agent, SimulationBounds} from "./agent"
-import {AgentRedrawRequiredEvent, AppWindow} from "./appwindow.ts";
+import { Agent } from "./agent"
+import { AgentRedrawRequiredEvent, AppWindow } from "./appwindow.ts";
+
+export interface SimulationBounds {
+    width: number
+    height: number
+}
+
 
 export class SpreadInfectionEvent extends Event {
     constructor(public agentId: string) { super("SpreadInfection") }
