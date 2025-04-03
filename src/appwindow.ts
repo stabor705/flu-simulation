@@ -19,8 +19,6 @@ export class AppWindow extends EventTarget {
     this.agentSprites = Object.values(this.simulation.agents).reduce((map , agent) => {
       const color = agent.stateKind === "Healthy" ? 0x00ff00 : 0xff0000
       const circle = new PIXI.Graphics().circle(0, 0, agent.radius).fill(color)
-      circle.x = Math.random() * width
-      circle.y = Math.random() * height
       map[agent.id] = circle
       return map
     }, {} as typeof this.agentSprites)
@@ -38,6 +36,7 @@ export class AppWindow extends EventTarget {
       const sprite = this.agentSprites[event.agentId]
       sprite.clear()
       // TODO: would be nice to not use deprecated methods, but I could not find the PixiJS v8.0 way
+      sprite.fill(0xff0000)
       sprite.beginFill(0xff0000)
       sprite.drawCircle(0, 0, event.radius)
       sprite.endFill()

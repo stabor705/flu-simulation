@@ -24,7 +24,9 @@ export class Simulation extends EventTarget {
 
         this._agents = Object.fromEntries(Array.from({length: agentNum}, () => {
             const infected = Math.random() < 0.3
-            const agent = new Agent(0, 0, infected ? "Infected" : "Healthy", this)
+            const init_x = Math.random() * bounds.width
+            const init_y = Math.random() * bounds.height
+            const agent = new Agent(init_x, init_y, infected ? "Infected" : "Healthy", this)
             return [agent.id, agent]
         }))
 
