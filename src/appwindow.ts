@@ -34,12 +34,10 @@ export class AppWindow extends EventTarget {
       if (!(event instanceof AgentRedrawRequiredEvent)) return
 
       const sprite = this.agentSprites[event.agentId]
-      sprite.clear()
-      // TODO: would be nice to not use deprecated methods, but I could not find the PixiJS v8.0 way
-      sprite.fill(0xff0000)
-      sprite.beginFill(0xff0000)
-      sprite.drawCircle(0, 0, event.radius)
-      sprite.endFill()
+      sprite
+        .clear()
+        .circle(0, 0, event.radius)
+        .fill(0xff0000)
     })
   }
 
