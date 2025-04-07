@@ -51,7 +51,8 @@ export class Agent {
         public y: number,
         stateKind: AgentStateKind,
         private simulation: Simulation,
-        public v: number = 0.1,
+        public v: number,
+        private infectionSpreadInterval: number,
         public radius: number = 10
     ) {
         switch (stateKind) {
@@ -59,7 +60,7 @@ export class Agent {
                 this.state = new HealthyAgentState()
                 break
             case "Infected":
-                this.state = new InfectedAgentState(1000, this.simulation, this.id)
+                this.state = new InfectedAgentState(this.infectionSpreadInterval, this.simulation, this.id)
                 break
         }
     }
@@ -95,6 +96,6 @@ export class Agent {
     infect() {
         if (this.state.kind === "Infected") return
 
-        this.state = new InfectedAgentState(1000, this.simulation, this.id)
+        this.state = new InfectedAgentState(this.infectionSpreadInterval, this.simulation, this.id)
     }
 }
