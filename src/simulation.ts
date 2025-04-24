@@ -25,7 +25,16 @@ export class Simulation extends EventTarget {
             const infected = Math.random() < config.maxInitialInfected
             const init_x = Math.random() * bounds.width
             const init_y = Math.random() * bounds.height
-            const agent = new Agent(init_x, init_y, infected ? "Infected" : "Healthy", this, config.agentMovementSpeed, config.infectionSpreadInterval)
+            const agent = new Agent(
+                this, 
+                init_x, 
+                init_y, 
+                infected ? "Infected" : "Healthy", 
+                config.agentMovementSpeed, 
+                config.infectionSpreadInterval,
+                config.agentRadius,
+                config.agentInfectionSpreadRadius
+            )
             return [agent.id, agent]
         }))
 
@@ -37,7 +46,13 @@ export class Simulation extends EventTarget {
                 const distance = Math.sqrt((agent.x - otherAgent.x) ** 2 + (agent.y - otherAgent.y) ** 2)
                 if (distance < this.config.agentInfectionSpreadRadius) {
                     otherAgent.infect()
-                    this.window?.dispatchEvent(new AgentRedrawRequiredEvent(otherAgent.id, otherAgent.radius))
+                    this.window?.dispatchEvent(
+                        new AgentRedrawRequiredEvent(
+                            otherAgent.id, 
+                            otherAgent.radius, 
+                            otherAgent.infectionSpreadRadius
+                        )
+                    )
                 }
             }
         })

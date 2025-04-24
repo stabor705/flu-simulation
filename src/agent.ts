@@ -47,13 +47,14 @@ export class Agent {
     private state: AgentState
 
     constructor(
+        private simulation: Simulation,
         public x: number,
         public y: number,
         stateKind: AgentStateKind,
-        private simulation: Simulation,
         public v: number,
         private infectionSpreadInterval: number,
-        public radius: number = 10
+        public radius: number = 10,
+        public infectionSpreadRadius: number = 20
     ) {
         switch (stateKind) {
             case "Healthy":

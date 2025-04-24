@@ -6,6 +6,7 @@ import { SimulationConfig } from './config.ts';
 const config = new SimulationConfig({
     agentNum: 10,
     agentInfectionSpreadRadius: 20,
+    agentRadius: 10,
     agentMovementSpeed: 0.1,
     maxInitialInfected: 0.3,
     infectionSpreadInterval: 1000
