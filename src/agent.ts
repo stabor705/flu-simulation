@@ -41,7 +41,7 @@ class InfectedAgentState extends AgentState {
 export class Agent {
     public id = uuidv4()
     private noise: Noise = new Noise(Math.random())
-    private noiseOffset: number = 0
+    private noiseOffset: [number, number] = [Math.random() * 1000, Math.random() * 1000]
     public get stateKind(): AgentStateKind { return this.state.kind }
 
     private state: AgentState
@@ -66,10 +66,21 @@ export class Agent {
     }
 
     move(deltaTime: number, bounds: SimulationBounds) {
-        const angle = this.noise.perlin2(this.noiseOffset, this.noiseOffset) * Math.PI * 2
+        this.noiseOffset[0] += 0.005
+        this.noiseOffset[1] += 0.004
 
-        let deltaX = Math.cos(angle) * this.v * deltaTime
-        let deltaY = Math.sin(angle) * this.v * deltaTime
+        const noiseX = this.noise.perlin2(this.noiseOffset[0], this.noiseOffset[1]);
+        const noiseY = this.noise.perlin2(this.noiseOffset[0] + 10.3, this.noiseOffset[1] + 5.7);
+
+        const magnitude = Math.sqrt(noiseX * noiseX + noiseY * noiseY);
+
+        let deltaX = 0;
+        let deltaY = 0;
+
+        if (magnitude > 0) {
+            deltaX = (noiseX / magnitude) * this.v * deltaTime;
+            deltaY = (noiseY / magnitude) * this.v * deltaTime;
+    }
 
         deltaX = (this.x + deltaX - this.radius < 0)
             ? Math.abs(deltaX)
@@ -85,8 +96,6 @@ export class Agent {
 
         this.x += deltaX
         this.y += deltaY
-
-        this.noiseOffset += 0.01
     }
 
     tick(deltaTime: number) {
