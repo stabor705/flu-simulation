@@ -1,6 +1,10 @@
-import { Noise } from "noisejs";
-import { v4 as uuidv4 } from 'uuid'
-import {Simulation, SimulationBounds, SpreadInfectionEvent} from "./simulation.ts";
+import { Noise } from "noisejs"
+import { v4 as uuidv4 } from "uuid"
+import {
+    Simulation,
+    SimulationBounds,
+    SpreadInfectionEvent,
+} from "./simulation.ts"
 
 abstract class AgentState {
     abstract tick(deltaTime: number): void
@@ -33,7 +37,9 @@ class InfectedAgentState extends AgentState {
         this.timeUntilNextInfectionSpread -= deltaTime
         if (this.timeUntilNextInfectionSpread <= 0) {
             this.timeUntilNextInfectionSpread = this.infectionSpreadInterval
-            this.simulation.dispatchEvent(new SpreadInfectionEvent(this.agentId))
+            this.simulation.dispatchEvent(
+                new SpreadInfectionEvent(this.agentId)
+            )
         }
     }
 }
@@ -41,8 +47,13 @@ class InfectedAgentState extends AgentState {
 export class Agent {
     public id = uuidv4()
     private noise: Noise = new Noise(Math.random())
-    private noiseOffset: [number, number] = [Math.random() * 1000, Math.random() * 1000]
-    public get stateKind(): AgentStateKind { return this.state.kind }
+    private noiseOffset: [number, number] = [
+        Math.random() * 1000,
+        Math.random() * 1000,
+    ]
+    public get stateKind(): AgentStateKind {
+        return this.state.kind
+    }
 
     private state: AgentState
 
@@ -61,7 +72,11 @@ export class Agent {
                 this.state = new HealthyAgentState()
                 break
             case "Infected":
-                this.state = new InfectedAgentState(this.infectionSpreadInterval, this.simulation, this.id)
+                this.state = new InfectedAgentState(
+                    this.infectionSpreadInterval,
+                    this.simulation,
+                    this.id
+                )
                 break
         }
     }
@@ -70,30 +85,38 @@ export class Agent {
         this.noiseOffset[0] += 0.005
         this.noiseOffset[1] += 0.004
 
-        const noiseX = this.noise.perlin2(this.noiseOffset[0], this.noiseOffset[1]);
-        const noiseY = this.noise.perlin2(this.noiseOffset[0] + 10.3, this.noiseOffset[1] + 5.7);
+        const noiseX = this.noise.perlin2(
+            this.noiseOffset[0],
+            this.noiseOffset[1]
+        )
+        const noiseY = this.noise.perlin2(
+            this.noiseOffset[0] + 10.3,
+            this.noiseOffset[1] + 5.7
+        )
 
-        const magnitude = Math.sqrt(noiseX * noiseX + noiseY * noiseY);
+        const magnitude = Math.sqrt(noiseX * noiseX + noiseY * noiseY)
 
-        let deltaX = 0;
-        let deltaY = 0;
+        let deltaX = 0
+        let deltaY = 0
 
         if (magnitude > 0) {
-            deltaX = (noiseX / magnitude) * this.v * deltaTime;
-            deltaY = (noiseY / magnitude) * this.v * deltaTime;
-    }
+            deltaX = (noiseX / magnitude) * this.v * deltaTime
+            deltaY = (noiseY / magnitude) * this.v * deltaTime
+        }
 
-        deltaX = (this.x + deltaX - this.radius < 0)
-            ? Math.abs(deltaX)
-            : (this.x + deltaX + this.radius > bounds.width)
-                ? -Math.abs(deltaX)
-                : deltaX;
+        deltaX =
+            this.x + deltaX - this.radius < 0
+                ? Math.abs(deltaX)
+                : this.x + deltaX + this.radius > bounds.width
+                  ? -Math.abs(deltaX)
+                  : deltaX
 
-        deltaY = (this.y + deltaY - this.radius < 0)
-            ? Math.abs(deltaY)
-            : (this.y + deltaY + this.radius > bounds.height)
-                ? -Math.abs(deltaY)
-                : deltaY;
+        deltaY =
+            this.y + deltaY - this.radius < 0
+                ? Math.abs(deltaY)
+                : this.y + deltaY + this.radius > bounds.height
+                  ? -Math.abs(deltaY)
+                  : deltaY
 
         this.x += deltaX
         this.y += deltaY
@@ -106,6 +129,10 @@ export class Agent {
     infect() {
         if (this.state.kind === "Infected") return
 
-        this.state = new InfectedAgentState(this.infectionSpreadInterval, this.simulation, this.id)
+        this.state = new InfectedAgentState(
+            this.infectionSpreadInterval,
+            this.simulation,
+            this.id
+        )
     }
 }

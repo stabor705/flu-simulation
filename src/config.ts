@@ -13,7 +13,6 @@ export class SimulationConfig {
         agentMovementSpeed = 0.1,
         maxInitialInfected = 0.3,
         infectionSpreadInterval = 1000,
-
     }: Partial<SimulationConfig> = {}) {
         this.agentNum = agentNum
         this.agentInfectionSpreadRadius = agentInfectionSpreadRadius
@@ -22,4 +21,4 @@ export class SimulationConfig {
         this.maxInitialInfected = maxInitialInfected
         this.agentMovementSpeed = agentMovementSpeed
     }
-} 
+}
