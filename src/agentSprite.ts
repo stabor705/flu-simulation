@@ -1,4 +1,4 @@
-import * as PIXI from 'pixi.js';
+import * as PIXI from "pixi.js"
 
 export class AgentSprite extends PIXI.Graphics {
     constructor(
@@ -6,29 +6,23 @@ export class AgentSprite extends PIXI.Graphics {
         private infectionSpreadRadius: number,
         isInfected: boolean
     ) {
-        super();
+        super()
         if (isInfected) {
-            this.drawInfected();
-        }
-        else {
-            this.drawHealthy();
+            this.drawInfected()
+        } else {
+            this.drawHealthy()
         }
     }
 
     public drawHealthy() {
-        this
-        .clear()
-        .circle(0, 0, this.radius)
-        .fill(0x00ff00);
+        this.clear().circle(0, 0, this.radius).fill(0x00ff00)
     }
 
     public drawInfected() {
-        this
-        .clear()
-        .circle(0, 0, this.infectionSpreadRadius)
-        .fill({color:0xff0000, alpha:0.2})
-        .circle(0, 0, this.radius)
-        .fill(0xff0000);
+        this.clear()
+            .circle(0, 0, this.infectionSpreadRadius)
+            .fill({ color: 0xff0000, alpha: 0.2 })
+            .circle(0, 0, this.radius)
+            .fill(0xff0000)
     }
-
 }
