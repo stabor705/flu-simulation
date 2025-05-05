@@ -1,9 +1,10 @@
 import * as PIXI from "pixi.js";
 import {Simulation} from "./simulation.ts";
 import {Agent} from "./agent.ts";
+import { AgentSprite } from "./agentSprite.ts";
 
 export class AgentRedrawRequiredEvent extends Event {
-  constructor(public agentId: string, public radius: number) {
+  constructor(public agentId: string, public radius: number, public infectionSpreadRadius: number) {
     super("AgentRedrawRequired")
   }
 }
@@ -17,9 +18,8 @@ export class AppWindow extends EventTarget {
 
     this.app = new PIXI.Application()
     this.agentSprites = Object.values(this.simulation.agents).reduce((map , agent) => {
-      const color = agent.stateKind === "Healthy" ? 0x00ff00 : 0xff0000
-      const circle = new PIXI.Graphics().circle(0, 0, agent.radius).fill(color)
-      map[agent.id] = circle
+      const sprite = new AgentSprite(agent.radius, agent.infectionSpreadRadius, agent.stateKind === "Infected")
+      map[agent.id] = sprite
       return map
     }, {} as typeof this.agentSprites)
     this.app.init({width: width, height: height, background: 0xffffff}).then(() => {
@@ -33,11 +33,8 @@ export class AppWindow extends EventTarget {
     this.addEventListener("AgentRedrawRequired", (event: Event) => {
       if (!(event instanceof AgentRedrawRequiredEvent)) return
 
-      const sprite = this.agentSprites[event.agentId]
-      sprite
-        .clear()
-        .circle(0, 0, event.radius)
-        .fill(0xff0000)
+      const sprite = this.agentSprites[event.agentId] as AgentSprite
+      sprite.drawInfected()
     })
   }
 
