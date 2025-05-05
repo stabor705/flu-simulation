@@ -13,7 +13,7 @@ export class AppWindow extends EventTarget {
   private app: PIXI.Application
   private readonly agentSprites: Record<Agent["id"], PIXI.Graphics> = {}
 
-  constructor(width: number, height: number, private simulation: Simulation) {
+  constructor(width: number, height: number, private simulation: Simulation, id: number | undefined = undefined) {
     super()
 
     this.app = new PIXI.Application()
@@ -23,7 +23,9 @@ export class AppWindow extends EventTarget {
       return map
     }, {} as typeof this.agentSprites)
     this.app.init({width: width, height: height, background: 0xffffff}).then(() => {
-      document.getElementById("simulation-window")?.appendChild(this.app.canvas)
+      const elementId = `simulation-window${id ? `-${id}` : ""}`
+      console.log(elementId)
+      document.getElementById(elementId)?.appendChild(this.app.canvas)
       this.app.ticker.add(this.onTick.bind(this))
     })
     for (const sprite of Object.values(this.agentSprites)) {
