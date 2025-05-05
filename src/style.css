@@ -1,9 +1,30 @@
-#simulation-window {
+#app {
   text-align: center;
 }
 
-#simulation-window canvas {
+.simulation-window canvas {
   border: 1px solid black;
   border-radius: 0.5em;
   padding: 1em;
+}
+
+main {
+  display: inline-grid;
+  grid-template-columns: auto auto auto;
+  grid-gap: 1em;
+}
+
+.score {
+  position: fixed;
+  top: 10px;
+  left: 10px;
+  text-align: left;
+}
+
+.infected-label {
+  color: red;
+}
+
+.healthy-label {
+  color: green;
 }

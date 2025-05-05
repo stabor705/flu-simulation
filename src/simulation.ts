@@ -7,9 +7,13 @@ export interface SimulationBounds {
     height: number
 }
 
-
 export class SpreadInfectionEvent extends Event {
     constructor(public agentId: string) { super("SpreadInfection") }
+}
+
+export interface SimulationStatistics {
+    healthyCount: number
+    infectedCount: number
 }
 
 export class Simulation extends EventTarget {
@@ -40,6 +44,7 @@ export class Simulation extends EventTarget {
 
         this.addEventListener("SpreadInfection", (event: Event) => {
             if (!(event instanceof SpreadInfectionEvent)) return
+
             const agent = this._agents[event.agentId]
             for (const otherAgent of Object.values(this.agents)) {
                 if (agent === otherAgent) continue
@@ -67,5 +72,12 @@ export class Simulation extends EventTarget {
             agent.move(deltaTime, this.bounds)
             agent.tick(deltaTime)
         })
+    }
+
+    getStatistics(): SimulationStatistics {
+        return {
+            healthyCount: Object.values(this._agents).filter(agent => agent.stateKind === "Healthy").length,
+            infectedCount: Object.values(this._agents).filter(agent => agent.stateKind === "Infected").length
+        }
     }
 }
