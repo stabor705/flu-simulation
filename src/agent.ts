@@ -4,6 +4,7 @@ import {
     Simulation,
     SimulationBounds,
     SpreadInfectionEvent,
+    UpdateStateEvent,
 } from "./simulation.ts"
 
 abstract class AgentState {
@@ -31,15 +32,19 @@ class InfectedAgentState extends AgentState {
     kind: AgentStateKind = "Infected"
 
     private timeUntilNextInfectionSpread: number
+    protected timeToNextStateChange: number
 
     constructor(
         private readonly infectionSpreadInterval: number,
-        private simulation: Simulation,
-        private agentId: string
+        timeToNextStateChange: number,
+        protected chanceToRecover: number,
+        protected simulation: Simulation,
+        protected agentId: string,
     ) {
         super()
 
         this.timeUntilNextInfectionSpread = infectionSpreadInterval
+        this.timeToNextStateChange = timeToNextStateChange
     }
 
     tick(deltaTime: number) {
@@ -51,7 +56,19 @@ class InfectedAgentState extends AgentState {
             )
         }
 
-        // TODO: Implement logic for changing to Recovered or Dead state
+        this.timeToNextStateChange -= deltaTime
+        if (this.timeToNextStateChange <= 0) {
+            const randomChance = Math.random()
+            if (randomChance < this.chanceToRecover) {
+                this.simulation.dispatchEvent(
+                    new UpdateStateEvent(this.agentId, "Recovered")
+                )
+            } else {
+                this.simulation.dispatchEvent(
+                    new UpdateStateEvent(this.agentId, "Dead")
+                )
+            }
+        }
     }
 }
 
@@ -60,16 +77,25 @@ class InfectedWithoutSymptomsAgentState extends InfectedAgentState {
 
     constructor(
         infectionSpreadInterval: number,
+        incubationTime: number,
+        changceToRecover: number,
         simulation: Simulation,
         agentId: string
     ) {
-        super(infectionSpreadInterval, simulation, agentId)
+        super(infectionSpreadInterval, incubationTime, changceToRecover, simulation, agentId)
     }
 
     tick(deltaTime: number) {
         super.tick(deltaTime)
 
-        // TODO: Implement logic for changing to Infected state
+        this.timeToNextStateChange -= deltaTime
+        if (this.timeToNextStateChange <= 0) {
+            this.simulation.dispatchEvent(
+                new UpdateStateEvent(this.agentId, "Infected")
+            )
+        }
+
+
     }
 }
 
@@ -86,7 +112,7 @@ export class Agent {
         return this.state.kind
     }
 
-    private state: AgentState
+    private state!: AgentState
 
     constructor(
         private simulation: Simulation,
@@ -95,34 +121,13 @@ export class Agent {
         stateKind: AgentStateKind,
         public v: number,
         private infectionSpreadInterval: number,
-        public radius: number = 10,
-        public infectionSpreadRadius: number = 20
+        public radius: number,
+        public infectionSpreadRadius: number,
+        public incubationPeriod: number,
+        public ilnessDuration: number,
+        public chanceToRecover: number,
     ) {
-        switch (stateKind) {
-            case "Healthy":
-                this.state = new HealthyAgentState()
-                break
-            case "InfectedWithoutSymptoms":
-                this.state = new InfectedWithoutSymptomsAgentState(
-                    this.infectionSpreadInterval,
-                    this.simulation,
-                    this.id
-                )
-                break
-            case "Infected":
-                this.state = new InfectedAgentState(
-                    this.infectionSpreadInterval,
-                    this.simulation,
-                    this.id
-                )
-                break
-            case "Recovered":
-                this.state = new RecoveredAgentState()
-                break
-            case "Dead":
-                this.state = new DeadAgentState()
-                break
-        }
+        this.changeState(stateKind)
     }
 
     move(deltaTime: number, bounds: SimulationBounds) {
@@ -175,6 +180,8 @@ export class Agent {
             case "Infected":
                 this.state = new InfectedAgentState(
                 this.infectionSpreadInterval,
+                this.ilnessDuration,
+                this.chanceToRecover,
                 this.simulation,
                 this.id
                 )
@@ -182,6 +189,8 @@ export class Agent {
             case "InfectedWithoutSymptoms":
                 this.state = new InfectedWithoutSymptomsAgentState(
                     this.infectionSpreadInterval,
+                    this.incubationPeriod,
+                    this.chanceToRecover,
                     this.simulation,
                     this.id
                 )

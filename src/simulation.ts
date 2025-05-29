@@ -13,6 +13,15 @@ export class SpreadInfectionEvent extends Event {
     }
 }
 
+export class UpdateStateEvent extends Event {
+    constructor(
+        public agentId: string,
+        public newStateKind: Agent["stateKind"]
+    ) {
+        super("UpdateState")
+    }
+}
+
 export interface SimulationStatistics {
     healthyCount: number
     infectedCount: number
@@ -45,7 +54,10 @@ export class Simulation extends EventTarget {
                     config.agentMovementSpeed,
                     config.infectionSpreadInterval,
                     config.agentRadius,
-                    config.agentInfectionSpreadRadius
+                    config.agentInfectionSpreadRadius,
+                    config.incubationPeriod,
+                    config.ilnessDuration,
+                    config.chanceToRecover,
                 )
                 return [agent.id, agent]
             })
@@ -75,6 +87,22 @@ export class Simulation extends EventTarget {
                     )
                 }
             }
+        })
+
+        this.addEventListener("UpdateState", (event: Event) => {
+            if (!(event instanceof UpdateStateEvent)) return
+
+            const agent = this._agents[event.agentId]
+            if (!agent) return
+
+            agent.changeState(event.newStateKind)
+            this.window?.dispatchEvent(
+                new AgentRedrawRequiredEvent(
+                    agent.id,
+                    agent.radius,
+                    agent.infectionSpreadRadius
+                )
+            )
         })
     }
 
