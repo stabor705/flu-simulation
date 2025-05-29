@@ -11,11 +11,20 @@ abstract class AgentState {
     abstract kind: AgentStateKind
 }
 
-type AgentStateKind = "Healthy" | "Infected"
-
+type AgentStateKind = "Healthy" | "Infected" | "InfectedWithoutSymptoms" | "Recovered" | "Dead"
 class HealthyAgentState extends AgentState {
     tick() {}
     kind: AgentStateKind = "Healthy"
+}
+
+class RecoveredAgentState extends AgentState {
+    tick() {}
+    kind: AgentStateKind = "Recovered"
+}
+
+class DeadAgentState extends AgentState {
+    tick() {}
+    kind: AgentStateKind = "Dead"
 }
 
 class InfectedAgentState extends AgentState {
@@ -41,8 +50,30 @@ class InfectedAgentState extends AgentState {
                 new SpreadInfectionEvent(this.agentId)
             )
         }
+
+        // TODO: Implement logic for changing to Recovered or Dead state
     }
 }
+
+class InfectedWithoutSymptomsAgentState extends InfectedAgentState {
+    kind: AgentStateKind = "InfectedWithoutSymptoms"
+
+    constructor(
+        infectionSpreadInterval: number,
+        simulation: Simulation,
+        agentId: string
+    ) {
+        super(infectionSpreadInterval, simulation, agentId)
+    }
+
+    tick(deltaTime: number) {
+        super.tick(deltaTime)
+
+        // TODO: Implement logic for changing to Infecte state
+    }
+}
+
+
 
 export class Agent {
     public id = uuidv4()
@@ -71,12 +102,25 @@ export class Agent {
             case "Healthy":
                 this.state = new HealthyAgentState()
                 break
+            case "InfectedWithoutSymptoms":
+                this.state = new InfectedWithoutSymptomsAgentState(
+                    this.infectionSpreadInterval,
+                    this.simulation,
+                    this.id
+                )
+                break
             case "Infected":
                 this.state = new InfectedAgentState(
                     this.infectionSpreadInterval,
                     this.simulation,
                     this.id
                 )
+                break
+            case "Recovered":
+                this.state = new RecoveredAgentState()
+                break
+            case "Dead":
+                this.state = new DeadAgentState()
                 break
         }
     }
