@@ -27,9 +27,8 @@ class RecoveredAgentState extends AgentState {
 class DeadAgentState extends AgentState {
     kind: AgentStateKind = "Dead"
 
-    private timeToRemove: number = 3000
-
     constructor(
+        private timeToRemove: number,
         private simulation: Simulation,
         private agentId: string
     ) {
@@ -144,6 +143,7 @@ export class Agent {
         public incubationPeriod: number,
         public ilnessDuration: number,
         public chanceToRecover: number,
+        public timeToRemoveDead: number,
     ) {
         this.changeState(stateKind)
     }
@@ -221,6 +221,7 @@ export class Agent {
                 break
             case "Dead":
                 this.state = new DeadAgentState(
+                    this.timeToRemoveDead,
                     this.simulation,
                     this.id
                 )

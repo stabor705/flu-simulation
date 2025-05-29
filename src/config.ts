@@ -8,6 +8,7 @@ export class SimulationConfig {
     incubationPeriod: number
     ilnessDuration: number
     chanceToRecover: number
+    timeToRemoveDead: number
 
     constructor({
         agentNum = 10,
@@ -19,6 +20,8 @@ export class SimulationConfig {
         incubationPeriod = 10000,
         ilnessDuration = 10000,
         chanceToRecover = 0.7,
+        timeToRemoveDead = 5000,
+        
     }: Partial<SimulationConfig> = {}) {
         this.agentNum = agentNum
         this.agentInfectionSpreadRadius = agentInfectionSpreadRadius
@@ -29,5 +32,6 @@ export class SimulationConfig {
         this.incubationPeriod = incubationPeriod
         this.ilnessDuration = ilnessDuration
         this.chanceToRecover = chanceToRecover
+        this.timeToRemoveDead = timeToRemoveDead
     }
 }

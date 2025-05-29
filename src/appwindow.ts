@@ -6,8 +6,8 @@ import { AgentSprite } from "./agentSprite.ts"
 export class AgentRedrawRequiredEvent extends Event {
     constructor(
         public agentId: string,
-        public radius: number,
-        public infectionSpreadRadius: number
+        public newStateKind: Agent["stateKind"],
+        public removeAgent: boolean = false
     ) {
         super("AgentRedrawRequired")
     }
@@ -31,6 +31,7 @@ export class AppWindow extends EventTarget {
                 const sprite = new AgentSprite(
                     agent.radius,
                     agent.infectionSpreadRadius,
+                    agent.timeToRemoveDead,
                     agent.stateKind === "Infected"
                 )
                 map[agent.id] = sprite
@@ -54,7 +55,31 @@ export class AppWindow extends EventTarget {
             if (!(event instanceof AgentRedrawRequiredEvent)) return
 
             const sprite = this.agentSprites[event.agentId] as AgentSprite
-            sprite.drawInfected()
+
+            if (event.removeAgent) {
+                this.app.stage.removeChild(sprite)
+                delete this.agentSprites[event.agentId]
+                return
+            }
+
+            switch (event.newStateKind) {
+                case "Healthy":
+                    sprite.drawHealthy()
+                    break
+                case "Infected":
+                    sprite.drawInfected()
+                    break
+                case "InfectedWithoutSymptoms":
+                    sprite.drawInfectedWithoutSymptoms()
+                    break
+                case "Recovered":
+                    sprite.drawRecovered()
+                    break
+                case "Dead":
+                    sprite.drawDead()
+                    break
+
+            }
         })
     }
 
