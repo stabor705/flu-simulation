@@ -5,6 +5,7 @@ import {
     SimulationBounds,
     SpreadInfectionEvent,
     UpdateStateEvent,
+    RemoveAgentEvent
 } from "./simulation.ts"
 
 abstract class AgentState {
@@ -14,18 +15,35 @@ abstract class AgentState {
 
 type AgentStateKind = "Healthy" | "Infected" | "InfectedWithoutSymptoms" | "Recovered" | "Dead"
 class HealthyAgentState extends AgentState {
-    tick() {}
     kind: AgentStateKind = "Healthy"
+    tick() {}
 }
 
 class RecoveredAgentState extends AgentState {
-    tick() {}
     kind: AgentStateKind = "Recovered"
+    tick() {}
 }
 
 class DeadAgentState extends AgentState {
-    tick() {}
     kind: AgentStateKind = "Dead"
+
+    private timeToRemove: number = 3000
+
+    constructor(
+        private simulation: Simulation,
+        private agentId: string
+    ) {
+        super()
+    }
+
+    tick(deltaTime: number) {
+        this.timeToRemove -= deltaTime
+        if (this.timeToRemove <= 0) {
+            this.simulation.dispatchEvent(
+                new RemoveAgentEvent(this.agentId)
+            )
+        }
+    }
 }
 
 class InfectedAgentState extends AgentState {
@@ -202,7 +220,10 @@ export class Agent {
                 this.state = new RecoveredAgentState()
                 break
             case "Dead":
-                this.state = new DeadAgentState()
+                this.state = new DeadAgentState(
+                    this.simulation,
+                    this.id
+                )
                 break
         }
     }

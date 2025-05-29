@@ -22,6 +22,12 @@ export class UpdateStateEvent extends Event {
     }
 }
 
+export class RemoveAgentEvent extends Event {
+    constructor(public agentId: string) {
+        super("RemoveAgent")
+    }
+}
+
 export interface SimulationStatistics {
     healthyCount: number
     infectedCount: number
@@ -102,6 +108,18 @@ export class Simulation extends EventTarget {
                     agent.radius,
                     agent.infectionSpreadRadius
                 )
+            )
+        })
+
+        this.addEventListener("RemoveAgent", (event: Event) => {
+            if (!(event instanceof RemoveAgentEvent)) return
+
+            const agent = this._agents[event.agentId]
+            if (!agent) return
+
+            delete this._agents[event.agentId]
+            this.window?.dispatchEvent(
+                new AgentRedrawRequiredEvent(agent.id, 0, 0)
             )
         })
     }

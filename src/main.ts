@@ -11,7 +11,12 @@ const config = new SimulationConfig({
     agentMovementSpeed: 0.1,
     maxInitialInfected: 0.3,
     infectionSpreadInterval: 1000,
+    incubationPeriod: 10000,
+    ilnessDuration: 10000,
+    chanceToRecover: 0.7,
 })
+
+
 
 const simulations = Array.from({ length: 10 }, (_, index) => {
     const simulation = new Simulation(config, { width: 360, height: 360 })
