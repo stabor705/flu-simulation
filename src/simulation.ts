@@ -57,12 +57,15 @@ export class Simulation extends EventTarget {
             const agent = this._agents[event.agentId]
             for (const otherAgent of Object.values(this.agents)) {
                 if (agent === otherAgent) continue
+
                 const distance = Math.sqrt(
                     (agent.x - otherAgent.x) ** 2 +
                         (agent.y - otherAgent.y) ** 2
                 )
                 if (distance < this.config.agentInfectionSpreadRadius) {
-                    otherAgent.infect()
+                    if (otherAgent.stateKind === "Healthy") {
+                        otherAgent.changeState("InfectedWithoutSymptoms")
+                    }
                     this.window?.dispatchEvent(
                         new AgentRedrawRequiredEvent(
                             otherAgent.id,

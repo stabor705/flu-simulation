@@ -69,7 +69,7 @@ class InfectedWithoutSymptomsAgentState extends InfectedAgentState {
     tick(deltaTime: number) {
         super.tick(deltaTime)
 
-        // TODO: Implement logic for changing to Infecte state
+        // TODO: Implement logic for changing to Infected state
     }
 }
 
@@ -170,13 +170,31 @@ export class Agent {
         this.state.tick(deltaTime)
     }
 
-    infect() {
-        if (this.state.kind === "Infected") return
-
-        this.state = new InfectedAgentState(
-            this.infectionSpreadInterval,
-            this.simulation,
-            this.id
-        )
+    changeState(state: AgentStateKind) {
+        switch (state) {
+            case "Infected":
+                this.state = new InfectedAgentState(
+                this.infectionSpreadInterval,
+                this.simulation,
+                this.id
+                )
+                break
+            case "InfectedWithoutSymptoms":
+                this.state = new InfectedWithoutSymptomsAgentState(
+                    this.infectionSpreadInterval,
+                    this.simulation,
+                    this.id
+                )
+                break
+            case "Healthy":
+                this.state = new HealthyAgentState()
+                break
+            case "Recovered":
+                this.state = new RecoveredAgentState()
+                break
+            case "Dead":
+                this.state = new DeadAgentState()
+                break
+        }
     }
 }
