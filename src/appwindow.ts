@@ -86,9 +86,11 @@ export class AppWindow extends EventTarget {
     private onTick(ticker: PIXI.Ticker) {
         this.simulation.step(ticker.deltaMS)
         this.simulation.agents.forEach((agent) => {
-            const sprite = this.agentSprites[agent.id]
-            sprite.x = agent.x
-            sprite.y = agent.y
+            if (agent.stateKind !== "Dead") {
+                const sprite = this.agentSprites[agent.id]
+                sprite.x = agent.x
+                sprite.y = agent.y
+            }
         })
     }
 }
