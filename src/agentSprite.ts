@@ -16,15 +16,11 @@ export class AgentSprite extends PIXI.Graphics {
     }
 
     public drawHealthy() {
-        this.clear()
-            .circle(0, 0, this.radius)
-            .fill(0x00ff00)
+        this.clear().circle(0, 0, this.radius).fill(0x00ff00)
     }
-    
+
     public drawRecovered() {
-        this.clear()
-            .circle(0, 0, this.radius)
-            .fill(0x0000ff)
+        this.clear().circle(0, 0, this.radius).fill(0x0000ff)
     }
 
     public drawDead() {

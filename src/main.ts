@@ -16,8 +16,6 @@ const config = new SimulationConfig({
     chanceToRecover: 0.7,
 })
 
-
-
 const simulations = Array.from({ length: 10 }, (_, index) => {
     const simulation = new Simulation(config, { width: 360, height: 360 })
     const window = new AppWindow(360, 360, simulation, index + 1)
@@ -45,12 +43,11 @@ const updateStatistics = () => {
                     accumulatedStatistics.recoverdCount +
                     statistics.recoverdCount,
                 deadCount:
-                    accumulatedStatistics.deadCount + 
-                    statistics.deadCount,    
+                    accumulatedStatistics.deadCount + statistics.deadCount,
             }
         },
         {
-            infectedCount: 0, 
+            infectedCount: 0,
             healthyCount: 0,
             infectedWithoutSymptomsCount: 0,
             recoverdCount: 0,

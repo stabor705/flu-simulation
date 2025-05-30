@@ -21,7 +21,6 @@ export class SimulationConfig {
         ilnessDuration = 10000,
         chanceToRecover = 0.7,
         timeToRemoveDead = 5000,
-        
     }: Partial<SimulationConfig> = {}) {
         this.agentNum = agentNum
         this.agentInfectionSpreadRadius = agentInfectionSpreadRadius

@@ -78,7 +78,6 @@ export class AppWindow extends EventTarget {
                 case "Dead":
                     sprite.drawDead()
                     break
-
             }
         })
     }

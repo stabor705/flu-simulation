@@ -67,7 +67,7 @@ export class Simulation extends EventTarget {
                     config.incubationPeriod,
                     config.ilnessDuration,
                     config.chanceToRecover,
-                    config.timeToRemoveDead,
+                    config.timeToRemoveDead
                 )
                 return [agent.id, agent]
             })
@@ -106,10 +106,7 @@ export class Simulation extends EventTarget {
 
             agent.changeState(event.newStateKind)
             this.window?.dispatchEvent(
-                new AgentRedrawRequiredEvent(
-                    agent.id,
-                    agent.stateKind
-                )
+                new AgentRedrawRequiredEvent(agent.id, agent.stateKind)
             )
         })
 
@@ -120,11 +117,7 @@ export class Simulation extends EventTarget {
             if (!agent) return
 
             this.window?.dispatchEvent(
-                new AgentRedrawRequiredEvent(
-                    agent.id,
-                    agent.stateKind,
-                    true
-                )
+                new AgentRedrawRequiredEvent(agent.id, agent.stateKind, true)
             )
         })
     }

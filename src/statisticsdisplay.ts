@@ -10,15 +10,17 @@ export class StatisticsDisplay {
     constructor() {
         let healthyCounter = document.getElementById("healthy-counter")
         let infectedCounter = document.getElementById("infected-counter")
-        let infectedNoSymptomsCounter = document.getElementById("infected-no-symptoms-counter")
+        let infectedNoSymptomsCounter = document.getElementById(
+            "infected-no-symptoms-counter"
+        )
         let recoveredCounter = document.getElementById("recovered-counter")
         let deadCounter = document.getElementById("dead-counter")
         if (
-            healthyCounter === null 
-            || infectedCounter === null
-            || infectedNoSymptomsCounter === null
-            || recoveredCounter === null
-            || deadCounter === null
+            healthyCounter === null ||
+            infectedCounter === null ||
+            infectedNoSymptomsCounter === null ||
+            recoveredCounter === null ||
+            deadCounter === null
         ) {
             throw new Error("StatisticsDisplay: Counter elements not found")
         }
@@ -30,11 +32,18 @@ export class StatisticsDisplay {
     }
 
     updateStatistics(statistics: SimulationStatistics) {
-        this.healthyCounter.textContent = (statistics.healthyCount ?? 0).toString()
-        this.infectedCounter.textContent = (statistics.infectedCount ?? 0).toString()
-        this.infectedNoSymptomsCounter.textContent = (statistics.infectedWithoutSymptomsCount ?? 0).toString()
-        this.recoveredCounter.textContent = (statistics.recoverdCount ?? 0).toString()
+        this.healthyCounter.textContent = (
+            statistics.healthyCount ?? 0
+        ).toString()
+        this.infectedCounter.textContent = (
+            statistics.infectedCount ?? 0
+        ).toString()
+        this.infectedNoSymptomsCounter.textContent = (
+            statistics.infectedWithoutSymptomsCount ?? 0
+        ).toString()
+        this.recoveredCounter.textContent = (
+            statistics.recoverdCount ?? 0
+        ).toString()
         this.deadCounter.textContent = (statistics.deadCount ?? 0).toString()
-        
     }
 }

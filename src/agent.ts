@@ -5,7 +5,7 @@ import {
     SimulationBounds,
     SpreadInfectionEvent,
     UpdateStateEvent,
-    RemoveAgentEvent
+    RemoveAgentEvent,
 } from "./simulation.ts"
 
 abstract class AgentState {
@@ -13,7 +13,12 @@ abstract class AgentState {
     abstract kind: AgentStateKind
 }
 
-type AgentStateKind = "Healthy" | "Infected" | "InfectedWithoutSymptoms" | "Recovered" | "Dead"
+type AgentStateKind =
+    | "Healthy"
+    | "Infected"
+    | "InfectedWithoutSymptoms"
+    | "Recovered"
+    | "Dead"
 class HealthyAgentState extends AgentState {
     kind: AgentStateKind = "Healthy"
     tick() {}
@@ -38,9 +43,7 @@ class DeadAgentState extends AgentState {
     tick(deltaTime: number) {
         this.timeToRemove -= deltaTime
         if (this.timeToRemove <= 0) {
-            this.simulation.dispatchEvent(
-                new RemoveAgentEvent(this.agentId)
-            )
+            this.simulation.dispatchEvent(new RemoveAgentEvent(this.agentId))
         }
     }
 }
@@ -56,7 +59,7 @@ class InfectedAgentState extends AgentState {
         timeToNextStateChange: number,
         protected chanceToRecover: number,
         protected simulation: Simulation,
-        protected agentId: string,
+        protected agentId: string
     ) {
         super()
 
@@ -99,7 +102,13 @@ class InfectedWithoutSymptomsAgentState extends InfectedAgentState {
         simulation: Simulation,
         agentId: string
     ) {
-        super(infectionSpreadInterval, incubationTime, changceToRecover, simulation, agentId)
+        super(
+            infectionSpreadInterval,
+            incubationTime,
+            changceToRecover,
+            simulation,
+            agentId
+        )
     }
 
     tick(deltaTime: number) {
@@ -111,11 +120,8 @@ class InfectedWithoutSymptomsAgentState extends InfectedAgentState {
                 new UpdateStateEvent(this.agentId, "Infected")
             )
         }
-
-
     }
 }
-
 
 export class Agent {
     public id = uuidv4()
@@ -142,7 +148,7 @@ export class Agent {
         public incubationPeriod: number,
         public ilnessDuration: number,
         public chanceToRecover: number,
-        public timeToRemoveDead: number,
+        public timeToRemoveDead: number
     ) {
         this.changeState(stateKind)
     }
@@ -196,11 +202,11 @@ export class Agent {
         switch (state) {
             case "Infected":
                 this.state = new InfectedAgentState(
-                this.infectionSpreadInterval,
-                this.ilnessDuration,
-                this.chanceToRecover,
-                this.simulation,
-                this.id
+                    this.infectionSpreadInterval,
+                    this.ilnessDuration,
+                    this.chanceToRecover,
+                    this.simulation,
+                    this.id
                 )
                 break
             case "InfectedWithoutSymptoms":
