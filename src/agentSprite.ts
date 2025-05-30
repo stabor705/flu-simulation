@@ -61,7 +61,7 @@ export class AgentSprite extends PIXI.Graphics {
     public drawInfectedWithoutSymptoms() {
         this.clear()
             .circle(0, 0, this.infectionSpreadRadius)
-            .fill({ color: 0xFAA118, alpha: 0.2 })
+            .fill({ color: 0xfa6e00, alpha: 0.2 })
             .circle(0, 0, this.radius)
             .fill(0xffa500)
     }

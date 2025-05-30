@@ -31,6 +31,9 @@ export class RemoveAgentEvent extends Event {
 export interface SimulationStatistics {
     healthyCount: number
     infectedCount: number
+    infectedWithoutSymptomsCount: number
+    recoverdCount: number
+    deadCount: number
 }
 
 export class Simulation extends EventTarget {
@@ -56,7 +59,7 @@ export class Simulation extends EventTarget {
                     this,
                     init_x,
                     init_y,
-                    infected ? "Infected" : "Healthy",
+                    infected ? "InfectedWithoutSymptoms" : "Healthy",
                     config.agentMovementSpeed,
                     config.infectionSpreadInterval,
                     config.agentRadius,
@@ -116,7 +119,6 @@ export class Simulation extends EventTarget {
             const agent = this._agents[event.agentId]
             if (!agent) return
 
-            delete this._agents[event.agentId]
             this.window?.dispatchEvent(
                 new AgentRedrawRequiredEvent(
                     agent.id,
@@ -145,6 +147,15 @@ export class Simulation extends EventTarget {
             ).length,
             infectedCount: Object.values(this._agents).filter(
                 (agent) => agent.stateKind === "Infected"
+            ).length,
+            infectedWithoutSymptomsCount: Object.values(this._agents).filter(
+                (agent) => agent.stateKind === "InfectedWithoutSymptoms"
+            ).length,
+            recoverdCount: Object.values(this._agents).filter(
+                (agent) => agent.stateKind === "Recovered"
+            ).length,
+            deadCount: Object.values(this._agents).filter(
+                (agent) => agent.stateKind === "Dead"
             ).length,
         }
     }

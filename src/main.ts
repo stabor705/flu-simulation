@@ -11,8 +11,8 @@ const config = new SimulationConfig({
     agentMovementSpeed: 0.1,
     maxInitialInfected: 0.3,
     infectionSpreadInterval: 1000,
-    incubationPeriod: 10000,
-    ilnessDuration: 10000,
+    incubationPeriod: 15000,
+    ilnessDuration: 15000,
     chanceToRecover: 0.7,
 })
 
@@ -38,9 +38,24 @@ const updateStatistics = () => {
                 healthyCount:
                     accumulatedStatistics.healthyCount +
                     statistics.healthyCount,
+                infectedWithoutSymptomsCount:
+                    accumulatedStatistics.infectedWithoutSymptomsCount +
+                    statistics.infectedWithoutSymptomsCount,
+                recoverdCount:
+                    accumulatedStatistics.recoverdCount +
+                    statistics.recoverdCount,
+                deadCount:
+                    accumulatedStatistics.deadCount + 
+                    statistics.deadCount,    
             }
         },
-        { infectedCount: 0, healthyCount: 0 } satisfies SimulationStatistics
+        {
+            infectedCount: 0, 
+            healthyCount: 0,
+            infectedWithoutSymptomsCount: 0,
+            recoverdCount: 0,
+            deadCount: 0,
+        } satisfies SimulationStatistics
     )
     statisticsDisplay.updateStatistics(currentStatistics)
 }

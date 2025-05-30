@@ -25,6 +25,18 @@ main {
     color: red;
 }
 
+.infected-no-symptoms-label {
+    color: rgb(255, 115, 0);
+}
+
 .healthy-label {
     color: green;
+}
+
+.recovered-label {
+    color: blue;
+}
+
+.dead-label {
+    color: black;
 }

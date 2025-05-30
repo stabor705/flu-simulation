@@ -117,7 +117,6 @@ class InfectedWithoutSymptomsAgentState extends InfectedAgentState {
 }
 
 
-
 export class Agent {
     public id = uuidv4()
     private noise: Noise = new Noise(Math.random())
