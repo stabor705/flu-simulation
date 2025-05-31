@@ -16,12 +16,18 @@ const config = new SimulationConfig({
     chanceToRecover: 0.7,
 })
 
-const simulations = Array.from({ length: 10 }, (_, index) => {
+
+
+const simulations = Array.from({ length: 2 }, () => {
     const simulation = new Simulation(config, { width: 360, height: 360 })
-    const window = new AppWindow(360, 360, simulation, index + 1)
-    simulation.initWindow(window)
     return simulation
 })
+
+const window = new AppWindow(1280, 720, simulations)
+
+for (const simulation of simulations) {
+    simulation.initWindow(window)
+}
 
 const statisticsDisplay = new StatisticsDisplay()
 
