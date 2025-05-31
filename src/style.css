@@ -1,25 +1,39 @@
+body {
+    font-family: "Inter", sans-serif;
+    width: 100vw;
+    height: 100vh;
+    margin: 0;
+}
+
 #app {
     text-align: center;
+    height: 100%;
+    width: 100%;
+    display: flex;
+    flex-direction: column;
 }
 
 main {
-    display: inline-grid;
-    grid-template-columns: auto auto auto;
-    grid-gap: 1em;
+    flex-grow: 1;
 }
 
 .score {
-    position: fixed;
-    top: 10px;
-    left: 10px;
-    text-align: left;
+    display: flex;
+    justify-content: space-around;
+    padding: 1em;
+}
+
+.label {
+    font-size: 1.3rem;
+    display: flex;
+    flex-direction: column;
 }
 
 .infected-label {
     color: red;
 }
 
-.simulation-window canvas {
+#simulation-window canvas {
     box-shadow: rgba(0, 0, 0, 0.24) 0px 3px 8px;
 }
 
@@ -37,4 +51,13 @@ main {
 
 .dead-label {
     color: black;
+}
+
+.button {
+    font-size: 1.2rem;
+    padding: 0.5em;
+}
+
+.controls {
+    padding: 0.5em;
 }

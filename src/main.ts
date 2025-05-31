@@ -5,7 +5,7 @@ import { SimulationConfig } from "./config.ts"
 import { StatisticsDisplay } from "./statisticsdisplay.ts"
 
 const config = new SimulationConfig({
-    agentNum: 10,
+    agentNum: 30,
     agentInfectionSpreadRadius: 20,
     agentRadius: 10,
     agentMovementSpeed: 0.1,
@@ -16,17 +16,23 @@ const config = new SimulationConfig({
     chanceToRecover: 0.7,
 })
 
+const boxHeight = 480
+const boxWidth = 480
 
-
-const simulations = Array.from({ length: 9 }, () => {
-    const simulation = new Simulation(config, { width: 360, height: 360 })
+const simulations = Array.from({ length: 36 }, () => {
+    const simulation = new Simulation(config, { width: boxWidth, height: boxHeight })
     return simulation
 })
 
-const window = new AppWindow(1280, 720, simulations, [3, 3], 360, 360)
+const simulationElement = document.getElementById("simulation-window")
+
+const windowWidth = simulationElement?.clientWidth
+const windowHeight = simulationElement?.clientHeight
+const appWindow = new AppWindow(windowWidth ?? 720, windowHeight ? windowHeight - 30 : 360, simulations, [6, 6], boxHeight, boxWidth)
+// const appWindow = new AppWindow(720, 360, simulations, [6, 6], boxHeight, boxWidth)
 
 for (const simulation of simulations) {
-    simulation.initWindow(window)
+    simulation.initWindow(appWindow)
 }
 
 const statisticsDisplay = new StatisticsDisplay()

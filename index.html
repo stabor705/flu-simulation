@@ -5,34 +5,39 @@
         <link rel="icon" type="image/svg+xml" href="/vite.svg" />
         <meta name="viewport" content="width=device-width, initial-scale=1.0" />
         <title>Vite + TS</title>
+        <link rel="preconnect" href="https://fonts.googleapis.com">
+        <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+        <link href="https://fonts.googleapis.com/css2?family=Inter:ital,opsz,wght@0,14..32,100..900;1,14..32,100..900&family=Roboto:ital,wght@0,100..900;1,100..900&display=swap" rel="stylesheet">
     </head>
     <body>
         <div id="app">
             <section class="score">
-                <div class="infected-label">
-                    Infected (with symptoms):
+                <div class="label infected-label">
+                    <span>Infected (with symptoms)</span>
                     <span id="infected-counter"></span>
                 </div>
-                <div class="infected-no-symptoms-label">
-                    Infected (no symptoms):
+                <div class="label infected-no-symptoms-label">
+                    <span>Infected (no symptoms)</span>
                     <span id="infected-no-symptoms-counter"></span>
                 </div>
-                <div class="healthy-label">
-                    Healthy: <span id="healthy-counter"></span>
+                <div class="label healthy-label">
+                    <span>Healthy</span>
+                    <span id="healthy-counter"></span>
                 </div>
-                <div class="recovered-label">
-                    Recoverd: <span id="recovered-counter"></span>
+                <div class="label recovered-label">
+                    <span>Recoverd</span>
+                    <span id="recovered-counter"></span>
                 </div>
-                <div class="dead-label">
-                    Dead: <span id="dead-counter"></span>
+                <div class="label dead-label">
+                    <span>Dead</span> <span id="dead-counter"></span>
                 </div>
             </section>
-            <main>
-                <section
-                    id="simulation-window"
-                    class="simulation-window"
-                ></section>
+            <main id="simulation-window">
             </main>
+            <section class="controls">
+                <button class="button restart-button">Restart</button>
+                <button class="button export-button">Export report</button>
+            </section>
         </div>
         <script type="module" src="/src/main.ts"></script>
     </body>
