@@ -18,12 +18,12 @@ const config = new SimulationConfig({
 
 
 
-const simulations = Array.from({ length: 2 }, () => {
+const simulations = Array.from({ length: 9 }, () => {
     const simulation = new Simulation(config, { width: 360, height: 360 })
     return simulation
 })
 
-const window = new AppWindow(1280, 720, simulations)
+const window = new AppWindow(1280, 720, simulations, [3, 3], 360, 360)
 
 for (const simulation of simulations) {
     simulation.initWindow(window)

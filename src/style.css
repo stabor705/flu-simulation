@@ -2,12 +2,6 @@
     text-align: center;
 }
 
-.simulation-window canvas {
-    border: 1px solid black;
-    border-radius: 0.5em;
-    padding: 1em;
-}
-
 main {
     display: inline-grid;
     grid-template-columns: auto auto auto;
@@ -23,6 +17,10 @@ main {
 
 .infected-label {
     color: red;
+}
+
+.simulation-window canvas {
+    box-shadow: rgba(0, 0, 0, 0.24) 0px 3px 8px;
 }
 
 .infected-no-symptoms-label {

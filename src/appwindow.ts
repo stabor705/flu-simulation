@@ -24,18 +24,26 @@ export class AppWindow extends EventTarget {
         width: number,
         height: number,
         private simulations: Simulation[],
+        shape: [number, number],
+        boxHeight: number,
+        boxWidth: number,
+        gap: number = 16,
+        padding: number = 16,
     ) {
-        super()
+        console.assert(shape[0] * shape[1] === simulations.length);
 
+        super()
         this.app = new PIXI.Application()
         simulations.forEach((simulation, idx) => {
+            const x = idx % shape[0]
+            const y = Math.floor(idx / shape[0])
             const agentSprites = Object.values(simulation.agents).reduce(
                 (map, agent) => {
                     const sprite = new AgentSprite(
                         agent.radius,
                         agent.infectionSpreadRadius,
                         agent.timeToRemoveDead,
-                        [width * idx / 2, 0],
+                        [(boxWidth + gap + 2 * padding) * x + padding, (boxHeight + gap + 2 * padding) * y + padding],
                         agent.stateKind === "Infected"
                     )
                     map[agent.id] = sprite
@@ -75,6 +83,7 @@ export class AppWindow extends EventTarget {
                         break
                 }
             })
+
         })
 
         this.app
@@ -96,6 +105,22 @@ export class AppWindow extends EventTarget {
 
                 for (const sprite of Object.values(this.allAgentSprites)) {
                     viewport.addChild(sprite)
+                }
+
+                for (let idx = 0; idx < simulations.length; idx++) {
+                    const borders = new PIXI.Graphics()
+                    const x = idx % shape[0]
+                    const y = Math.floor(idx / shape[0])
+                    borders
+                        .roundRect(
+                            x * (boxWidth + gap + 2 * padding),
+                            y * (boxHeight + gap + 2 * padding),
+                            boxWidth + 2 * padding,
+                            boxHeight + 2 * padding
+                        )
+                        .stroke({ color: 0x000000, width: 2})
+
+                    viewport.addChild(borders)
                 }
             })
     }
