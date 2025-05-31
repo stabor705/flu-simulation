@@ -13,9 +13,27 @@ export class SpreadInfectionEvent extends Event {
     }
 }
 
+export class UpdateStateEvent extends Event {
+    constructor(
+        public agentId: string,
+        public newStateKind: Agent["stateKind"]
+    ) {
+        super("UpdateState")
+    }
+}
+
+export class RemoveAgentEvent extends Event {
+    constructor(public agentId: string) {
+        super("RemoveAgent")
+    }
+}
+
 export interface SimulationStatistics {
     healthyCount: number
     infectedCount: number
+    infectedWithoutSymptomsCount: number
+    recoverdCount: number
+    deadCount: number
 }
 
 export class Simulation extends EventTarget {
@@ -41,11 +59,15 @@ export class Simulation extends EventTarget {
                     this,
                     init_x,
                     init_y,
-                    infected ? "Infected" : "Healthy",
+                    infected ? "InfectedWithoutSymptoms" : "Healthy",
                     config.agentMovementSpeed,
                     config.infectionSpreadInterval,
                     config.agentRadius,
-                    config.agentInfectionSpreadRadius
+                    config.agentInfectionSpreadRadius,
+                    config.incubationPeriod,
+                    config.ilnessDuration,
+                    config.chanceToRecover,
+                    config.timeToRemoveDead
                 )
                 return [agent.id, agent]
             })
@@ -57,21 +79,46 @@ export class Simulation extends EventTarget {
             const agent = this._agents[event.agentId]
             for (const otherAgent of Object.values(this.agents)) {
                 if (agent === otherAgent) continue
+
                 const distance = Math.sqrt(
                     (agent.x - otherAgent.x) ** 2 +
                         (agent.y - otherAgent.y) ** 2
                 )
                 if (distance < this.config.agentInfectionSpreadRadius) {
-                    otherAgent.infect()
+                    if (otherAgent.stateKind === "Healthy") {
+                        otherAgent.changeState("InfectedWithoutSymptoms")
+                    }
                     this.window?.dispatchEvent(
                         new AgentRedrawRequiredEvent(
                             otherAgent.id,
-                            otherAgent.radius,
-                            otherAgent.infectionSpreadRadius
+                            otherAgent.stateKind
                         )
                     )
                 }
             }
+        })
+
+        this.addEventListener("UpdateState", (event: Event) => {
+            if (!(event instanceof UpdateStateEvent)) return
+
+            const agent = this._agents[event.agentId]
+            if (!agent) return
+
+            agent.changeState(event.newStateKind)
+            this.window?.dispatchEvent(
+                new AgentRedrawRequiredEvent(agent.id, agent.stateKind)
+            )
+        })
+
+        this.addEventListener("RemoveAgent", (event: Event) => {
+            if (!(event instanceof RemoveAgentEvent)) return
+
+            const agent = this._agents[event.agentId]
+            if (!agent) return
+
+            this.window?.dispatchEvent(
+                new AgentRedrawRequiredEvent(agent.id, agent.stateKind, true)
+            )
         })
     }
 
@@ -93,6 +140,15 @@ export class Simulation extends EventTarget {
             ).length,
             infectedCount: Object.values(this._agents).filter(
                 (agent) => agent.stateKind === "Infected"
+            ).length,
+            infectedWithoutSymptomsCount: Object.values(this._agents).filter(
+                (agent) => agent.stateKind === "InfectedWithoutSymptoms"
+            ).length,
+            recoverdCount: Object.values(this._agents).filter(
+                (agent) => agent.stateKind === "Recovered"
+            ).length,
+            deadCount: Object.values(this._agents).filter(
+                (agent) => agent.stateKind === "Dead"
             ).length,
         }
     }

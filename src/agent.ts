@@ -4,6 +4,8 @@ import {
     Simulation,
     SimulationBounds,
     SpreadInfectionEvent,
+    UpdateStateEvent,
+    RemoveAgentEvent,
 } from "./simulation.ts"
 
 abstract class AgentState {
@@ -11,26 +13,58 @@ abstract class AgentState {
     abstract kind: AgentStateKind
 }
 
-type AgentStateKind = "Healthy" | "Infected"
-
+type AgentStateKind =
+    | "Healthy"
+    | "Infected"
+    | "InfectedWithoutSymptoms"
+    | "Recovered"
+    | "Dead"
 class HealthyAgentState extends AgentState {
-    tick() {}
     kind: AgentStateKind = "Healthy"
+    tick() {}
+}
+
+class RecoveredAgentState extends AgentState {
+    kind: AgentStateKind = "Recovered"
+    tick() {}
+}
+
+class DeadAgentState extends AgentState {
+    kind: AgentStateKind = "Dead"
+
+    constructor(
+        private timeToRemove: number,
+        private simulation: Simulation,
+        private agentId: string
+    ) {
+        super()
+    }
+
+    tick(deltaTime: number) {
+        this.timeToRemove -= deltaTime
+        if (this.timeToRemove <= 0) {
+            this.simulation.dispatchEvent(new RemoveAgentEvent(this.agentId))
+        }
+    }
 }
 
 class InfectedAgentState extends AgentState {
     kind: AgentStateKind = "Infected"
 
     private timeUntilNextInfectionSpread: number
+    protected timeToNextStateChange: number
 
     constructor(
         private readonly infectionSpreadInterval: number,
-        private simulation: Simulation,
-        private agentId: string
+        timeToNextStateChange: number,
+        protected chanceToRecover: number,
+        protected simulation: Simulation,
+        protected agentId: string
     ) {
         super()
 
         this.timeUntilNextInfectionSpread = infectionSpreadInterval
+        this.timeToNextStateChange = timeToNextStateChange
     }
 
     tick(deltaTime: number) {
@@ -39,6 +73,51 @@ class InfectedAgentState extends AgentState {
             this.timeUntilNextInfectionSpread = this.infectionSpreadInterval
             this.simulation.dispatchEvent(
                 new SpreadInfectionEvent(this.agentId)
+            )
+        }
+
+        this.timeToNextStateChange -= deltaTime
+        if (this.timeToNextStateChange <= 0) {
+            const randomChance = Math.random()
+            if (randomChance < this.chanceToRecover) {
+                this.simulation.dispatchEvent(
+                    new UpdateStateEvent(this.agentId, "Recovered")
+                )
+            } else {
+                this.simulation.dispatchEvent(
+                    new UpdateStateEvent(this.agentId, "Dead")
+                )
+            }
+        }
+    }
+}
+
+class InfectedWithoutSymptomsAgentState extends InfectedAgentState {
+    kind: AgentStateKind = "InfectedWithoutSymptoms"
+
+    constructor(
+        infectionSpreadInterval: number,
+        incubationTime: number,
+        changceToRecover: number,
+        simulation: Simulation,
+        agentId: string
+    ) {
+        super(
+            infectionSpreadInterval,
+            incubationTime,
+            changceToRecover,
+            simulation,
+            agentId
+        )
+    }
+
+    tick(deltaTime: number) {
+        super.tick(deltaTime)
+
+        this.timeToNextStateChange -= deltaTime
+        if (this.timeToNextStateChange <= 0) {
+            this.simulation.dispatchEvent(
+                new UpdateStateEvent(this.agentId, "Infected")
             )
         }
     }
@@ -55,7 +134,7 @@ export class Agent {
         return this.state.kind
     }
 
-    private state: AgentState
+    private state!: AgentState
 
     constructor(
         private simulation: Simulation,
@@ -64,21 +143,14 @@ export class Agent {
         stateKind: AgentStateKind,
         public v: number,
         private infectionSpreadInterval: number,
-        public radius: number = 10,
-        public infectionSpreadRadius: number = 20
+        public radius: number,
+        public infectionSpreadRadius: number,
+        public incubationPeriod: number,
+        public ilnessDuration: number,
+        public chanceToRecover: number,
+        public timeToRemoveDead: number
     ) {
-        switch (stateKind) {
-            case "Healthy":
-                this.state = new HealthyAgentState()
-                break
-            case "Infected":
-                this.state = new InfectedAgentState(
-                    this.infectionSpreadInterval,
-                    this.simulation,
-                    this.id
-                )
-                break
-        }
+        this.changeState(stateKind)
     }
 
     move(deltaTime: number, bounds: SimulationBounds) {
@@ -126,13 +198,39 @@ export class Agent {
         this.state.tick(deltaTime)
     }
 
-    infect() {
-        if (this.state.kind === "Infected") return
-
-        this.state = new InfectedAgentState(
-            this.infectionSpreadInterval,
-            this.simulation,
-            this.id
-        )
+    changeState(state: AgentStateKind) {
+        switch (state) {
+            case "Infected":
+                this.state = new InfectedAgentState(
+                    this.infectionSpreadInterval,
+                    this.ilnessDuration,
+                    this.chanceToRecover,
+                    this.simulation,
+                    this.id
+                )
+                break
+            case "InfectedWithoutSymptoms":
+                this.state = new InfectedWithoutSymptomsAgentState(
+                    this.infectionSpreadInterval,
+                    this.incubationPeriod,
+                    this.chanceToRecover,
+                    this.simulation,
+                    this.id
+                )
+                break
+            case "Healthy":
+                this.state = new HealthyAgentState()
+                break
+            case "Recovered":
+                this.state = new RecoveredAgentState()
+                break
+            case "Dead":
+                this.state = new DeadAgentState(
+                    this.timeToRemoveDead,
+                    this.simulation,
+                    this.id
+                )
+                break
+        }
     }
 }
