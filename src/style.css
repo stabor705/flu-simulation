@@ -4,6 +4,7 @@ body {
     height: 100vh;
     margin: 0;
     display: flex;
+    flex-direction: column;
 }
 
 #app {
@@ -138,4 +139,27 @@ main {
     display: flex;
     justify-content: flex-end;
     width: 100%;
+}
+
+footer {
+    color: #666;
+    display: flex;
+    justify-content: center;
+    gap: 0.5em;
+}
+
+footer a {
+    color: black;
+    position: absolute;
+    right: 1em;
+    bottom: 0px;
+}
+
+footer svg {
+    width: 2em;
+    height: 2em;
+}
+
+.attribution {
+    text-align: center;
 }
