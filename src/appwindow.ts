@@ -30,7 +30,6 @@ export class AppWindow extends EventTarget {
         gap: number = 16,
         padding: number = 16
     ) {
-        console.assert(shape[0] * shape[1] === simulations.length)
         super()
         this.app = new PIXI.Application()
         this.initAgentSprites(
@@ -131,6 +130,9 @@ export class AppWindow extends EventTarget {
                 break
             case "Dead":
                 sprite.drawDead()
+                break
+            case "Quarantined":
+                sprite.drawQuarantined()
                 break
         }
     }

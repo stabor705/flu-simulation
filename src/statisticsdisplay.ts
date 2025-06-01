@@ -6,6 +6,7 @@ export class StatisticsDisplay {
     private infectedNoSymptomsCounter: HTMLElement
     private recoveredCounter: HTMLElement
     private deadCounter: HTMLElement
+    private quarantinedCounter: HTMLElement
 
     constructor() {
         let healthyCounter = document.getElementById("healthy-counter")
@@ -15,12 +16,14 @@ export class StatisticsDisplay {
         )
         let recoveredCounter = document.getElementById("recovered-counter")
         let deadCounter = document.getElementById("dead-counter")
+        let quarantinedCounter = document.getElementById("quarantined-counter")
         if (
             healthyCounter === null ||
             infectedCounter === null ||
             infectedNoSymptomsCounter === null ||
             recoveredCounter === null ||
-            deadCounter === null
+            deadCounter === null ||
+            quarantinedCounter === null
         ) {
             throw new Error("StatisticsDisplay: Counter elements not found")
         }
@@ -29,6 +32,7 @@ export class StatisticsDisplay {
         this.infectedNoSymptomsCounter = infectedNoSymptomsCounter
         this.recoveredCounter = recoveredCounter
         this.deadCounter = deadCounter
+        this.quarantinedCounter = quarantinedCounter
     }
 
     updateStatistics(statistics: SimulationStatistics) {
@@ -45,5 +49,8 @@ export class StatisticsDisplay {
             statistics.recoverdCount ?? 0
         ).toString()
         this.deadCounter.textContent = (statistics.deadCount ?? 0).toString()
+        this.quarantinedCounter.textContent = (
+            statistics.quarantinedCount ?? 0
+        ).toString()
     }
 }
