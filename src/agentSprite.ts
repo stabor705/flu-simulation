@@ -5,6 +5,7 @@ export class AgentSprite extends PIXI.Graphics {
         private radius: number,
         private infectionSpreadRadius: number,
         private timeToRemoveDead: number,
+        public offset: [number, number],
         isInitialyInfected: boolean
     ) {
         super()
