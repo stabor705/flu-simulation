@@ -1,6 +1,7 @@
 # Flu Simulation
 
 ## How to run
+
 ```bash
 npm install
 npm run dev
