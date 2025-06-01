@@ -10,7 +10,36 @@
         <link href="https://fonts.googleapis.com/css2?family=Inter:ital,opsz,wght@0,14..32,100..900;1,14..32,100..900&family=Roboto:ital,wght@0,100..900;1,100..900&display=swap" rel="stylesheet">
     </head>
     <body>
-        <div id="app">
+        <div id="form-app">
+            <h1>Run flu simulation</h1>
+            <form>
+                <div class="field">
+                    <label for="number-of-agents-per-community">Agents per community</label>
+                    <input
+                        id="number-of-agents-per-community"
+                        type="number"
+                        required
+                        min="1"
+                        value="10"
+                    />
+                </div>
+                <div class="field">
+                    <label for="number-of-communities">Number of communities</label>
+                    <input
+                        id="number-of-communities"
+                        type="number"
+                        required
+                        min="1"
+                        value="9"
+                    />
+                </div>
+                <span>Total number of people: <span id="total-number-of-agents"></span></span>
+                <div class="form-buttons">
+                    <button type="submit" class="primary-button">Start</button>
+                </div>
+            </form>
+        </div>
+        <div id="app" style="display: none">
             <section class="score">
                 <div class="label infected-label">
                     <span>Infected (with symptoms)</span>
