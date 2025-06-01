@@ -6,6 +6,13 @@ import { StatisticsDisplay } from "./statisticsdisplay.ts"
 
 const simulationWindowElem = document.getElementById("simulation-window")
 
+interface StatisticsHistoryEntry {
+    time: number
+    statistics: SimulationStatistics
+}
+const statisticsHistory: StatisticsHistoryEntry[] = []
+const statisticsUpdateInterval = 100
+
 const startSimulation = (
     agentsPerCommunity: number,
     numberOfCommunities: number
@@ -77,11 +84,32 @@ const startSimulation = (
             } satisfies SimulationStatistics
         )
         statisticsDisplay.updateStatistics(currentStatistics)
+        const lastTimestamp = statisticsHistory.at(-1)?.time
+        const timestamp =
+            lastTimestamp !== undefined
+                ? lastTimestamp + statisticsUpdateInterval
+                : 0
+        statisticsHistory.push({
+            time: timestamp,
+            statistics: currentStatistics,
+        })
     }
 
     updateStatistics()
     setInterval(updateStatistics, 100)
 }
+
+document.getElementById("export-button")?.addEventListener("click", () => {
+    const data = JSON.stringify(statisticsHistory)
+    const blob = new Blob([data], { type: "application/json" })
+    const url = URL.createObjectURL(blob)
+
+    const a = document.createElement("a")
+    a.href = url
+    a.download = "history.json"
+    a.click()
+    URL.revokeObjectURL(url)
+})
 
 const formAppElement = document.getElementById("form-app")
 const appElement = document.getElementById("app")
