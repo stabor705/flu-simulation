@@ -60,7 +60,7 @@ main {
 }
 
 .export-button {
-    background-color: #00CAFF;
+    background-color: #00caff;
     border: none;
     color: white;
     border-radius: 0.5rem;
@@ -68,8 +68,8 @@ main {
 
 .restart-button {
     background-color: white;
-    border: 1px solid #00CAFF;
-    color: #00CAFF;
+    border: 1px solid #00caff;
+    color: #00caff;
     border-radius: 0.5rem;
 }
 
@@ -109,7 +109,7 @@ main {
 }
 
 .primary-button {
-    background-color: #00CAFF;
+    background-color: #00caff;
     border: none;
     color: white;
     font-size: 1.1rem;
@@ -118,7 +118,7 @@ main {
 }
 
 .primary-button {
-    background-color: #00A0D1;
+    background-color: #00a0d1;
     cursor: pointer;
 }
 

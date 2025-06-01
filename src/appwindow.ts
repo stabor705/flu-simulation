@@ -2,7 +2,7 @@ import * as PIXI from "pixi.js"
 import { Simulation } from "./simulation.ts"
 import { Agent } from "./agent.ts"
 import { AgentSprite } from "./agentSprite.ts"
-import { Viewport } from "pixi-viewport";
+import { Viewport } from "pixi-viewport"
 
 export class AgentRedrawRequiredEvent extends Event {
     constructor(
@@ -28,12 +28,19 @@ export class AppWindow extends EventTarget {
         boxHeight: number,
         boxWidth: number,
         gap: number = 16,
-        padding: number = 16,
+        padding: number = 16
     ) {
-        console.assert(shape[0] * shape[1] === simulations.length);
+        console.assert(shape[0] * shape[1] === simulations.length)
         super()
         this.app = new PIXI.Application()
-        this.initAgentSprites(simulations, shape, boxWidth, boxHeight, gap, padding)
+        this.initAgentSprites(
+            simulations,
+            shape,
+            boxWidth,
+            boxHeight,
+            gap,
+            padding
+        )
         this.addAgentRedrawListener()
         this.initApp(width, height, shape, boxWidth, boxHeight, gap, padding)
     }
@@ -51,7 +58,15 @@ export class AppWindow extends EventTarget {
             const y = Math.floor(idx / shape[0])
             const agentSprites = Object.values(simulation.agents).reduce(
                 (map, agent) => {
-                    map[agent.id] = this.createAgentSprite(agent, x, y, boxWidth, boxHeight, gap, padding)
+                    map[agent.id] = this.createAgentSprite(
+                        agent,
+                        x,
+                        y,
+                        boxWidth,
+                        boxHeight,
+                        gap,
+                        padding
+                    )
                     return map
                 },
                 {} as AgentSprites
@@ -73,7 +88,10 @@ export class AppWindow extends EventTarget {
             agent.radius,
             agent.infectionSpreadRadius,
             agent.timeToRemoveDead,
-            [(boxWidth + gap + 2 * padding) * x + padding, (boxHeight + gap + 2 * padding) * y + padding],
+            [
+                (boxWidth + gap + 2 * padding) * x + padding,
+                (boxHeight + gap + 2 * padding) * y + padding,
+            ],
             agent.stateKind === "Infected"
         )
     }
@@ -94,7 +112,10 @@ export class AppWindow extends EventTarget {
         })
     }
 
-    private redrawAgentSprite(sprite: AgentSprite, stateKind: Agent["stateKind"]) {
+    private redrawAgentSprite(
+        sprite: AgentSprite,
+        stateKind: Agent["stateKind"]
+    ) {
         switch (stateKind) {
             case "Healthy":
                 sprite.drawHealthy()
@@ -123,7 +144,11 @@ export class AppWindow extends EventTarget {
         gap: number,
         padding: number
     ) {
-        await this.app.init({ width: width, height: height, background: 0xffffff })
+        await this.app.init({
+            width: width,
+            height: height,
+            background: 0xffffff,
+        })
         const elementId = `simulation-window`
         document.getElementById(elementId)?.appendChild(this.app.canvas)
         this.app.ticker.add(this.onTick.bind(this))
@@ -133,7 +158,14 @@ export class AppWindow extends EventTarget {
         viewport.drag().pinch().wheel().decelerate()
 
         this.addSpritesToViewport(viewport)
-        this.drawSimulationBorders(viewport, shape, boxWidth, boxHeight, gap, padding)
+        this.drawSimulationBorders(
+            viewport,
+            shape,
+            boxWidth,
+            boxHeight,
+            gap,
+            padding
+        )
     }
 
     private createViewport(width: number, height: number): Viewport {
@@ -142,7 +174,7 @@ export class AppWindow extends EventTarget {
             screenHeight: height,
             worldWidth: width,
             worldHeight: height,
-            events: this.app.renderer.events
+            events: this.app.renderer.events,
         })
     }
 

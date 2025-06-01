@@ -6,7 +6,10 @@ import { StatisticsDisplay } from "./statisticsdisplay.ts"
 
 const simulationWindowElem = document.getElementById("simulation-window")
 
-const startSimulation = (agentsPerCommunity: number, numberOfCommunities: number) => {
+const startSimulation = (
+    agentsPerCommunity: number,
+    numberOfCommunities: number
+) => {
     const config = new SimulationConfig({
         agentNum: agentsPerCommunity,
         agentInfectionSpreadRadius: 20,
@@ -24,13 +27,23 @@ const startSimulation = (agentsPerCommunity: number, numberOfCommunities: number
     const gridSide = Math.ceil(Math.sqrt(numberOfCommunities))
 
     const simulations = Array.from({ length: numberOfCommunities }, () => {
-        const simulation = new Simulation(config, { width: boxWidth, height: boxHeight })
+        const simulation = new Simulation(config, {
+            width: boxWidth,
+            height: boxHeight,
+        })
         return simulation
     })
 
     const windowWidth = simulationWindowElem?.clientWidth
     const windowHeight = simulationWindowElem?.clientHeight
-    const appWindow = new AppWindow(windowWidth ?? 720, windowHeight ? windowHeight - 30 : 360, simulations, [gridSide, gridSide], boxHeight, boxWidth)
+    const appWindow = new AppWindow(
+        windowWidth ?? 720,
+        windowHeight ? windowHeight - 30 : 360,
+        simulations,
+        [gridSide, gridSide],
+        boxHeight,
+        boxWidth
+    )
 
     for (const simulation of simulations) {
         simulation.initWindow(appWindow)
@@ -76,11 +89,15 @@ const startSimulation = (agentsPerCommunity: number, numberOfCommunities: number
 
 const formAppElement = document.getElementById("form-app")
 const appElement = document.getElementById("app")
-const numOfAgentsInput = document.getElementById("number-of-agents-per-community") as HTMLInputElement | undefined
-const numOfCommunitiesInput = document.getElementById("number-of-communities") as HTMLInputElement | undefined
+const numOfAgentsInput = document.getElementById(
+    "number-of-agents-per-community"
+) as HTMLInputElement | undefined
+const numOfCommunitiesInput = document.getElementById(
+    "number-of-communities"
+) as HTMLInputElement | undefined
 
-if (formAppElement)  {
-    formAppElement.addEventListener("submit", event => {
+if (formAppElement) {
+    formAppElement.addEventListener("submit", (event) => {
         if (!numOfAgentsInput || !numOfCommunitiesInput) {
             return
         }
@@ -95,10 +112,16 @@ if (formAppElement)  {
     })
 }
 
-const totalNumberOfAgentsElem = document.getElementById("total-number-of-agents")
+const totalNumberOfAgentsElem = document.getElementById(
+    "total-number-of-agents"
+)
 
 const updateTotalNumberOfAgents = () => {
-    if (!numOfAgentsInput || !numOfCommunitiesInput || !totalNumberOfAgentsElem) {
+    if (
+        !numOfAgentsInput ||
+        !numOfCommunitiesInput ||
+        !totalNumberOfAgentsElem
+    ) {
         return
     }
     const agentsPerCommunity = parseInt(numOfAgentsInput.value)

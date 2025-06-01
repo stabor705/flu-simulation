@@ -5,16 +5,21 @@
         <link rel="icon" type="image/svg+xml" href="/vite.svg" />
         <meta name="viewport" content="width=device-width, initial-scale=1.0" />
         <title>Vite + TS</title>
-        <link rel="preconnect" href="https://fonts.googleapis.com">
-        <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-        <link href="https://fonts.googleapis.com/css2?family=Inter:ital,opsz,wght@0,14..32,100..900;1,14..32,100..900&family=Roboto:ital,wght@0,100..900;1,100..900&display=swap" rel="stylesheet">
+        <link rel="preconnect" href="https://fonts.googleapis.com" />
+        <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+        <link
+            href="https://fonts.googleapis.com/css2?family=Inter:ital,opsz,wght@0,14..32,100..900;1,14..32,100..900&family=Roboto:ital,wght@0,100..900;1,100..900&display=swap"
+            rel="stylesheet"
+        />
     </head>
     <body>
         <div id="form-app">
             <h1>Run flu simulation</h1>
             <form>
                 <div class="field">
-                    <label for="number-of-agents-per-community">Agents per community</label>
+                    <label for="number-of-agents-per-community"
+                        >Agents per community</label
+                    >
                     <input
                         id="number-of-agents-per-community"
                         type="number"
@@ -24,7 +29,9 @@
                     />
                 </div>
                 <div class="field">
-                    <label for="number-of-communities">Number of communities</label>
+                    <label for="number-of-communities"
+                        >Number of communities</label
+                    >
                     <input
                         id="number-of-communities"
                         type="number"
@@ -33,7 +40,10 @@
                         value="9"
                     />
                 </div>
-                <span>Total number of people: <span id="total-number-of-agents"></span></span>
+                <span
+                    >Total number of people:
+                    <span id="total-number-of-agents"></span
+                ></span>
                 <div class="form-buttons">
                     <button type="submit" class="primary-button">Start</button>
                 </div>
@@ -61,8 +71,7 @@
                     <span>Dead</span> <span id="dead-counter"></span>
                 </div>
             </section>
-            <main id="simulation-window">
-            </main>
+            <main id="simulation-window"></main>
             <section class="controls">
                 <button class="button restart-button">Restart</button>
                 <button class="button export-button">Export report</button>
