@@ -34,6 +34,7 @@ export interface SimulationStatistics {
     infectedWithoutSymptomsCount: number
     recoverdCount: number
     deadCount: number
+    quarantinedCount: number
 }
 
 export class Simulation extends EventTarget {
@@ -67,7 +68,11 @@ export class Simulation extends EventTarget {
                     config.incubationPeriod,
                     config.ilnessDuration,
                     config.chanceToRecover,
-                    config.timeToRemoveDead
+                    config.timeToRemoveDead,
+                    config.timeToReleaseFromQuarantine,
+                    config.chanceToSurviveQuarantine,
+                    config.timeToQuarantine,
+                    config.chanceToQuarantine
                 )
                 return [agent.id, agent]
             })
@@ -86,7 +91,10 @@ export class Simulation extends EventTarget {
                 )
                 if (distance < this.config.agentInfectionSpreadRadius) {
                     if (otherAgent.stateKind === "Healthy") {
-                        otherAgent.changeState("InfectedWithoutSymptoms")
+                        otherAgent.changeState(
+                            "InfectedWithoutSymptoms",
+                            otherAgent.stateKind
+                        )
                     }
                     this.window?.dispatchEvent(
                         new AgentRedrawRequiredEvent(
@@ -104,11 +112,7 @@ export class Simulation extends EventTarget {
             const agent = this._agents[event.agentId]
             if (!agent) return
 
-            const oldState = agent.stateKind
-            const newState = event.newStateKind
-            console.log(`Old: ${oldState}\nNew: ${newState}`)
-
-            agent.changeState(event.newStateKind)
+            agent.changeState(event.newStateKind, agent.stateKind)
             this.window?.dispatchEvent(
                 new AgentRedrawRequiredEvent(agent.id, agent.stateKind)
             )
@@ -153,6 +157,9 @@ export class Simulation extends EventTarget {
             ).length,
             deadCount: Object.values(this._agents).filter(
                 (agent) => agent.stateKind === "Dead"
+            ).length,
+            quarantinedCount: Object.values(this._agents).filter(
+                (agent) => agent.stateKind === "Quarantined"
             ).length,
         }
     }

@@ -19,6 +19,7 @@ type AgentStateKind =
     | "InfectedWithoutSymptoms"
     | "Recovered"
     | "Dead"
+    | "Quarantined"
 class HealthyAgentState extends AgentState {
     kind: AgentStateKind = "Healthy"
     tick() {}
@@ -51,6 +52,7 @@ class DeadAgentState extends AgentState {
 abstract class InfectedAgentState extends AgentState {
     protected timeUntilNextInfectionSpread: number
     protected timeToNextStateChange: number
+    protected infectionDisabled: boolean = false
 
     constructor(
         private readonly infectionSpreadInterval: number,
@@ -69,7 +71,7 @@ abstract class InfectedAgentState extends AgentState {
 
     tick(deltaTime: number) {
         this.timeUntilNextInfectionSpread -= deltaTime
-        if (this.timeUntilNextInfectionSpread <= 0) {
+        if (!this.infectionDisabled && this.timeUntilNextInfectionSpread <= 0) {
             this.timeUntilNextInfectionSpread = this.infectionSpreadInterval
             this.simulation.dispatchEvent(
                 new SpreadInfectionEvent(this.agentId)
@@ -91,7 +93,9 @@ class InfectedWithSymptomsAgentState extends InfectedAgentState {
         timeToNextStateChange: number,
         protected chanceToRecover: number,
         protected simulation: Simulation,
-        protected agentId: string
+        protected agentId: string,
+        private chanceToQuarantine: number,
+        private timeUntilQuarantine: number
     ) {
         super(
             infectionSpreadInterval,
@@ -117,6 +121,17 @@ class InfectedWithSymptomsAgentState extends InfectedAgentState {
 
     tick(deltaTime: number) {
         super.tick(deltaTime)
+
+        this.timeUntilQuarantine -= deltaTime
+        if (this.timeUntilQuarantine <= 0) {
+            const randomChance = Math.random()
+            if (randomChance < this.chanceToQuarantine) {
+                this.simulation.dispatchEvent(
+                    new UpdateStateEvent(this.agentId, "Quarantined")
+                )
+                this.chanceToQuarantine = 10000
+            }
+        }
     }
 }
 
@@ -150,6 +165,35 @@ class InfectedWithoutSymptomsAgentState extends InfectedAgentState {
     }
 }
 
+class QuarantinedAgentState extends AgentState {
+    kind: AgentStateKind = "Quarantined"
+
+    constructor(
+        private readonly simulation: Simulation,
+        private readonly agentId: string,
+        private timeUntilRelease: number,
+        private readonly quarantineSurviveChance: number
+    ) {
+        super()
+    }
+
+    tick(deltaTime: number) {
+        this.timeUntilRelease -= deltaTime
+        if (this.timeUntilRelease <= 0) {
+            const randomChance = Math.random()
+            if (randomChance < this.quarantineSurviveChance) {
+                this.simulation.dispatchEvent(
+                    new UpdateStateEvent(this.agentId, "Recovered")
+                )
+            } else {
+                this.simulation.dispatchEvent(
+                    new UpdateStateEvent(this.agentId, "Dead")
+                )
+            }
+        }
+    }
+}
+
 export class Agent {
     public id = uuidv4()
     private noise: Noise = new Noise(Math.random())
@@ -175,9 +219,13 @@ export class Agent {
         public incubationPeriod: number,
         public ilnessDuration: number,
         public chanceToRecover: number,
-        public timeToRemoveDead: number
+        public timeToRemoveDead: number,
+        private timeUntilRelease: number,
+        private chanceToSurviveQuarantine: number,
+        private timeToQuarantine: number,
+        private chanceToQuarantine: number
     ) {
-        this.changeState(stateKind)
+        this.changeState(stateKind, "Healthy")
     }
 
     move(deltaTime: number, bounds: SimulationBounds) {
@@ -225,7 +273,7 @@ export class Agent {
         this.state.tick(deltaTime)
     }
 
-    changeState(state: AgentStateKind) {
+    changeState(state: AgentStateKind, oldState: AgentStateKind) {
         switch (state) {
             case "Infected":
                 this.state = new InfectedWithSymptomsAgentState(
@@ -233,7 +281,9 @@ export class Agent {
                     this.ilnessDuration,
                     this.chanceToRecover,
                     this.simulation,
-                    this.id
+                    this.id,
+                    this.chanceToQuarantine,
+                    this.timeToQuarantine
                 )
                 break
             case "InfectedWithoutSymptoms":
@@ -252,10 +302,21 @@ export class Agent {
                 this.state = new RecoveredAgentState()
                 break
             case "Dead":
+                const timeToRemoveDead =
+                    oldState === "Quarantined" ? 0 : this.timeToRemoveDead
+                console.log(timeToRemoveDead)
                 this.state = new DeadAgentState(
-                    this.timeToRemoveDead,
+                    timeToRemoveDead,
                     this.simulation,
                     this.id
+                )
+                break
+            case "Quarantined":
+                this.state = new QuarantinedAgentState(
+                    this.simulation,
+                    this.id,
+                    this.timeUntilRelease,
+                    this.chanceToSurviveQuarantine
                 )
                 break
         }

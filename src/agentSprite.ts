@@ -62,4 +62,8 @@ export class AgentSprite extends PIXI.Graphics {
             .circle(0, 0, this.radius)
             .fill(0xffa500)
     }
+
+    public drawQuarantined() {
+        this.clear()
+    }
 }

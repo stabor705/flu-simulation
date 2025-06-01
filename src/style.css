@@ -4,6 +4,7 @@ body {
     height: 100vh;
     margin: 0;
     display: flex;
+    flex-direction: column;
 }
 
 #app {
@@ -54,6 +55,10 @@ main {
     color: black;
 }
 
+.score-quarantined {
+    color: #666;
+}
+
 .button {
     font-size: 1.2rem;
     padding: 0.5em;
@@ -73,12 +78,12 @@ main {
     border-radius: 0.5rem;
 }
 
-.controls {
+.bottom-panel {
     padding: 0.5em;
     display: flex;
     gap: 1em;
     align-items: center;
-    justify-content: center;
+    justify-content: space-between;
 }
 
 #form-app {
@@ -138,4 +143,25 @@ main {
     display: flex;
     justify-content: flex-end;
     width: 100%;
+}
+
+footer {
+    color: #666;
+    display: flex;
+    justify-content: center;
+    gap: 0.5em;
+    align-items: center;
+}
+
+footer a {
+    color: black;
+}
+
+footer svg {
+    width: 2em;
+    height: 2em;
+}
+
+.attribution {
+    text-align: center;
 }

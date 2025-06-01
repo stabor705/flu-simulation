@@ -12,14 +12,6 @@ const startSimulation = (
 ) => {
     const config = new SimulationConfig({
         agentNum: agentsPerCommunity,
-        agentInfectionSpreadRadius: 20,
-        agentRadius: 10,
-        agentMovementSpeed: 0.1,
-        maxInitialInfected: 0.3,
-        infectionSpreadInterval: 1000,
-        incubationPeriod: 15000,
-        ilnessDuration: 15000,
-        chanceToRecover: 0.7,
     })
 
     const boxHeight = 480
@@ -70,6 +62,9 @@ const startSimulation = (
                         statistics.recoverdCount,
                     deadCount:
                         accumulatedStatistics.deadCount + statistics.deadCount,
+                    quarantinedCount:
+                        accumulatedStatistics.quarantinedCount +
+                        statistics.quarantinedCount,
                 }
             },
             {
@@ -78,13 +73,14 @@ const startSimulation = (
                 infectedWithoutSymptomsCount: 0,
                 recoverdCount: 0,
                 deadCount: 0,
+                quarantinedCount: 0,
             } satisfies SimulationStatistics
         )
         statisticsDisplay.updateStatistics(currentStatistics)
     }
 
     updateStatistics()
-    setInterval(updateStatistics, 1000)
+    setInterval(updateStatistics, 100)
 }
 
 const formAppElement = document.getElementById("form-app")
