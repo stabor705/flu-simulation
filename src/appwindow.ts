@@ -92,7 +92,7 @@ export class AppWindow extends EventTarget {
                 (boxWidth + gap + 2 * padding) * x + padding,
                 (boxHeight + gap + 2 * padding) * y + padding,
             ],
-            agent.stateKind === "Infected"
+            agent.stateKind === "InfectedWithoutSymptoms"
         )
     }
 

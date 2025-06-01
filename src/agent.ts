@@ -48,10 +48,8 @@ class DeadAgentState extends AgentState {
     }
 }
 
-class InfectedAgentState extends AgentState {
-    kind: AgentStateKind = "Infected"
-
-    private timeUntilNextInfectionSpread: number
+abstract class InfectedAgentState extends AgentState {
+    protected timeUntilNextInfectionSpread: number
     protected timeToNextStateChange: number
 
     constructor(
@@ -67,6 +65,8 @@ class InfectedAgentState extends AgentState {
         this.timeToNextStateChange = timeToNextStateChange
     }
 
+    abstract changeState(): any
+
     tick(deltaTime: number) {
         this.timeUntilNextInfectionSpread -= deltaTime
         if (this.timeUntilNextInfectionSpread <= 0) {
@@ -78,17 +78,45 @@ class InfectedAgentState extends AgentState {
 
         this.timeToNextStateChange -= deltaTime
         if (this.timeToNextStateChange <= 0) {
-            const randomChance = Math.random()
-            if (randomChance < this.chanceToRecover) {
-                this.simulation.dispatchEvent(
-                    new UpdateStateEvent(this.agentId, "Recovered")
-                )
-            } else {
-                this.simulation.dispatchEvent(
-                    new UpdateStateEvent(this.agentId, "Dead")
-                )
-            }
+            this.changeState()
         }
+    }
+}
+
+class InfectedWithSymptomsAgentState extends InfectedAgentState {
+    kind: AgentStateKind = "Infected"
+
+    constructor(
+        infectionSpreadInterval: number,
+        timeToNextStateChange: number,
+        protected chanceToRecover: number,
+        protected simulation: Simulation,
+        protected agentId: string
+    ) {
+        super(
+            infectionSpreadInterval,
+            timeToNextStateChange,
+            chanceToRecover,
+            simulation,
+            agentId
+        )
+    }
+
+    changeState() {
+        const randomChance = Math.random()
+        if (randomChance < this.chanceToRecover) {
+            this.simulation.dispatchEvent(
+                new UpdateStateEvent(this.agentId, "Recovered")
+            )
+        } else {
+            this.simulation.dispatchEvent(
+                new UpdateStateEvent(this.agentId, "Dead")
+            )
+        }
+    }
+
+    tick(deltaTime: number) {
+        super.tick(deltaTime)
     }
 }
 
@@ -111,15 +139,14 @@ class InfectedWithoutSymptomsAgentState extends InfectedAgentState {
         )
     }
 
+    changeState() {
+        this.simulation.dispatchEvent(
+            new UpdateStateEvent(this.agentId, "Infected")
+        )
+    }
+
     tick(deltaTime: number) {
         super.tick(deltaTime)
-
-        this.timeToNextStateChange -= deltaTime
-        if (this.timeToNextStateChange <= 0) {
-            this.simulation.dispatchEvent(
-                new UpdateStateEvent(this.agentId, "Infected")
-            )
-        }
     }
 }
 
@@ -201,7 +228,7 @@ export class Agent {
     changeState(state: AgentStateKind) {
         switch (state) {
             case "Infected":
-                this.state = new InfectedAgentState(
+                this.state = new InfectedWithSymptomsAgentState(
                     this.infectionSpreadInterval,
                     this.ilnessDuration,
                     this.chanceToRecover,
