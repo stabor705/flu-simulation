@@ -49,7 +49,6 @@ class DeadAgentState extends AgentState {
 }
 
 abstract class InfectedAgentState extends AgentState {
-
     protected timeUntilNextInfectionSpread: number
     protected timeToNextStateChange: number
 
@@ -87,7 +86,6 @@ abstract class InfectedAgentState extends AgentState {
 class InfectedWithSymptomsAgentState extends InfectedAgentState {
     kind: AgentStateKind = "Infected"
 
-
     constructor(
         infectionSpreadInterval: number,
         timeToNextStateChange: number,
@@ -95,20 +93,26 @@ class InfectedWithSymptomsAgentState extends InfectedAgentState {
         protected simulation: Simulation,
         protected agentId: string
     ) {
-        super(infectionSpreadInterval, timeToNextStateChange, chanceToRecover, simulation, agentId)
+        super(
+            infectionSpreadInterval,
+            timeToNextStateChange,
+            chanceToRecover,
+            simulation,
+            agentId
+        )
     }
 
     changeState() {
         const randomChance = Math.random()
-            if (randomChance < this.chanceToRecover) {
-                this.simulation.dispatchEvent(
-                    new UpdateStateEvent(this.agentId, "Recovered")
-                )
-            } else {
-                this.simulation.dispatchEvent(
-                    new UpdateStateEvent(this.agentId, "Dead")
-                )
-            }
+        if (randomChance < this.chanceToRecover) {
+            this.simulation.dispatchEvent(
+                new UpdateStateEvent(this.agentId, "Recovered")
+            )
+        } else {
+            this.simulation.dispatchEvent(
+                new UpdateStateEvent(this.agentId, "Dead")
+            )
+        }
     }
 
     tick(deltaTime: number) {
@@ -137,8 +141,8 @@ class InfectedWithoutSymptomsAgentState extends InfectedAgentState {
 
     changeState() {
         this.simulation.dispatchEvent(
-                new UpdateStateEvent(this.agentId, "Infected")
-            )
+            new UpdateStateEvent(this.agentId, "Infected")
+        )
     }
 
     tick(deltaTime: number) {
