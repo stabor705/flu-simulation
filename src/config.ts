@@ -5,8 +5,8 @@ export class SimulationConfig {
     infectionSpreadInterval: number
     maxInitialInfected: number
     agentMovementSpeed: number
-    incubationPeriod: number
-    ilnessDuration: number
+    incubationPeriod: [number, number]
+    ilnessDuration: [number, number]
     chanceToRecover: number
     timeToRemoveDead: number
     timeToQuarantine: number
@@ -21,8 +21,8 @@ export class SimulationConfig {
         agentMovementSpeed = 0.1,
         maxInitialInfected = 0.3,
         infectionSpreadInterval = 1000,
-        incubationPeriod = 10000,
-        ilnessDuration = 10000,
+        incubationPeriod = [10000, 15000],
+        ilnessDuration = [10000, 25000],
         chanceToRecover = 0.7,
         timeToRemoveDead = 5000,
         timeToQuarantine = 6000,

@@ -56,7 +56,7 @@ abstract class InfectedAgentState extends AgentState {
 
     constructor(
         private readonly infectionSpreadInterval: number,
-        timeToNextStateChange: number,
+        timeRangeToNextStateChange: [number, number],
         protected chanceToRecover: number,
         protected simulation: Simulation,
         protected agentId: string
@@ -64,7 +64,10 @@ abstract class InfectedAgentState extends AgentState {
         super()
 
         this.timeUntilNextInfectionSpread = infectionSpreadInterval
-        this.timeToNextStateChange = timeToNextStateChange
+        const min = timeRangeToNextStateChange[0]
+        const max = timeRangeToNextStateChange[1]
+        this.timeToNextStateChange =
+            Math.floor(Math.random() * (max - min + 1)) + min
     }
 
     abstract changeState(): any
@@ -90,7 +93,7 @@ class InfectedWithSymptomsAgentState extends InfectedAgentState {
 
     constructor(
         infectionSpreadInterval: number,
-        timeToNextStateChange: number,
+        timeToNextStateChange: [number, number],
         protected chanceToRecover: number,
         protected simulation: Simulation,
         protected agentId: string,
@@ -140,7 +143,7 @@ class InfectedWithoutSymptomsAgentState extends InfectedAgentState {
 
     constructor(
         infectionSpreadInterval: number,
-        incubationTime: number,
+        incubationTime: [number, number],
         changceToRecover: number,
         simulation: Simulation,
         agentId: string
@@ -216,8 +219,8 @@ export class Agent {
         private infectionSpreadInterval: number,
         public radius: number,
         public infectionSpreadRadius: number,
-        public incubationPeriod: number,
-        public ilnessDuration: number,
+        public incubationPeriod: [number, number],
+        public ilnessDuration: [number, number],
         public chanceToRecover: number,
         public timeToRemoveDead: number,
         private timeUntilRelease: number,
