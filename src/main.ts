@@ -15,10 +15,20 @@ const statisticsUpdateInterval = 100
 
 const startSimulation = (
     agentsPerCommunity: number,
-    numberOfCommunities: number
+    numberOfCommunities: number,
+    agentInfectionSpreadRadius: number,
+    maxInitialInfected: number,
+    chanceToRecover: number,
+    chanceToQuarantine: number,
+    chanceToSurviveQuarantine: number
 ) => {
     const config = new SimulationConfig({
         agentNum: agentsPerCommunity,
+        agentInfectionSpreadRadius: agentInfectionSpreadRadius,
+        maxInitialInfected: maxInitialInfected,
+        chanceToRecover: chanceToRecover,
+        chanceToQuarantine: chanceToQuarantine,
+        chanceToSurviveQuarantine: chanceToSurviveQuarantine,
     })
 
     const boxHeight = 480
@@ -119,10 +129,33 @@ const numOfAgentsInput = document.getElementById(
 const numOfCommunitiesInput = document.getElementById(
     "number-of-communities"
 ) as HTMLInputElement | undefined
+const infectionSpreadRadiusInput = document.getElementById(
+    "agent-infection-spread-radius"
+) as HTMLInputElement | null
+const maxInitialInfectedInput = document.getElementById(
+    "max-initial-infected"
+) as HTMLInputElement | null
+const chanceToRecoverInput = document.getElementById(
+    "chance-to-recover"
+) as HTMLInputElement | null
+const chanceToQuarantineInput = document.getElementById(
+    "chance-to-quarantine"
+) as HTMLInputElement | null
+const chanceToSurviveQuarantineInput = document.getElementById(
+    "chance-to-survive-quarantine"
+) as HTMLInputElement | null
 
 if (formAppElement) {
     formAppElement.addEventListener("submit", (event) => {
-        if (!numOfAgentsInput || !numOfCommunitiesInput) {
+        if (
+            !numOfAgentsInput || 
+            !numOfCommunitiesInput ||
+            !infectionSpreadRadiusInput ||
+            !maxInitialInfectedInput ||
+            !chanceToRecoverInput ||
+            !chanceToQuarantineInput ||
+            !chanceToSurviveQuarantineInput
+        ) {
             return
         }
         event?.preventDefault()
@@ -132,7 +165,22 @@ if (formAppElement) {
         formAppElement.style.display = "none"
         const agentsPerCommunity = parseInt(numOfAgentsInput.value)
         const numberOfCommunities = parseInt(numOfCommunitiesInput.value)
-        startSimulation(agentsPerCommunity, numberOfCommunities)
+        const agentInfectionSpreadRadius = Number(infectionSpreadRadiusInput.value)
+        const maxInitialInfected = Number(maxInitialInfectedInput.value)
+        const chanceToRecover = Number(chanceToRecoverInput.value)
+        const chanceToQuarantine = Number(chanceToQuarantineInput.value)
+        const chanceToSurviveQuarantine = Number(
+            chanceToSurviveQuarantineInput.value
+        )
+        startSimulation(
+            agentsPerCommunity, 
+            numberOfCommunities,
+            agentInfectionSpreadRadius,
+            maxInitialInfected,
+            chanceToRecover,
+            chanceToQuarantine,
+            chanceToSurviveQuarantine
+        )
     })
 }
 
