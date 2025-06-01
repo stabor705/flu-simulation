@@ -32,7 +32,7 @@ export class AppWindow extends EventTarget {
                     agent.radius,
                     agent.infectionSpreadRadius,
                     agent.timeToRemoveDead,
-                    agent.stateKind === "Infected"
+                    agent.stateKind === "InfectedWithoutSymptoms"
                 )
                 map[agent.id] = sprite
                 return map

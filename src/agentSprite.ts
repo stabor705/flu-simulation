@@ -9,7 +9,7 @@ export class AgentSprite extends PIXI.Graphics {
     ) {
         super()
         if (isInitialyInfected) {
-            this.drawInfected()
+            this.drawInfectedWithoutSymptoms()
         } else {
             this.drawHealthy()
         }
