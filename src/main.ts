@@ -20,7 +20,8 @@ const startSimulation = (
     maxInitialInfected: number,
     chanceToRecover: number,
     chanceToQuarantine: number,
-    chanceToSurviveQuarantine: number
+    chanceToSurviveQuarantine: number,
+    isQuarantineEnabled: boolean
 ) => {
     const config = new SimulationConfig({
         agentNum: agentsPerCommunity,
@@ -29,6 +30,7 @@ const startSimulation = (
         chanceToRecover: chanceToRecover,
         chanceToQuarantine: chanceToQuarantine,
         chanceToSurviveQuarantine: chanceToSurviveQuarantine,
+        isQuarantineEnabled: isQuarantineEnabled
     })
 
     const boxHeight = 480
@@ -144,6 +146,9 @@ const chanceToQuarantineInput = document.getElementById(
 const chanceToSurviveQuarantineInput = document.getElementById(
     "chance-to-survive-quarantine"
 ) as HTMLInputElement | null
+const isQuarantineEnabledInput = document.getElementById(
+    "quarantine-checkbox"
+) as HTMLInputElement | null
 
 if (formAppElement) {
     formAppElement.addEventListener("submit", (event) => {
@@ -172,6 +177,7 @@ if (formAppElement) {
         const chanceToSurviveQuarantine = Number(
             chanceToSurviveQuarantineInput.value
         )
+        const isQuarantineEnabled = isQuarantineEnabledInput?.checked ?? false
         startSimulation(
             agentsPerCommunity, 
             numberOfCommunities,
@@ -179,7 +185,8 @@ if (formAppElement) {
             maxInitialInfected,
             chanceToRecover,
             chanceToQuarantine,
-            chanceToSurviveQuarantine
+            chanceToSurviveQuarantine,
+            isQuarantineEnabled
         )
     })
 }

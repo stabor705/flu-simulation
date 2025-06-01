@@ -118,6 +118,20 @@ main {
     width: 7em;
 }
 
+#form-app input[type="checkbox"] {
+    width: auto;
+    transform: scale(1.5);
+    cursor: pointer;
+}
+
+#form-app span{
+    padding-top: 0.5em;
+}
+
+#form-app .field {
+    padding-top: 0.5em;
+}
+
 .advanced-settings {
     padding-top: 1em;
 }

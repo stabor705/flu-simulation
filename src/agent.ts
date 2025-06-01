@@ -98,14 +98,15 @@ class InfectedWithSymptomsAgentState extends InfectedAgentState {
         protected simulation: Simulation,
         protected agentId: string,
         private chanceToQuarantine: number,
-        private timeUntilQuarantine: number
+        private timeUntilQuarantine: number,
+        private isQuarantineEnabled: boolean
     ) {
         super(
             infectionSpreadInterval,
             timeToNextStateChange,
             chanceToRecover,
             simulation,
-            agentId
+            agentId,
         )
     }
 
@@ -125,16 +126,19 @@ class InfectedWithSymptomsAgentState extends InfectedAgentState {
     tick(deltaTime: number) {
         super.tick(deltaTime)
 
-        this.timeUntilQuarantine -= deltaTime
-        if (this.timeUntilQuarantine <= 0) {
-            const randomChance = Math.random()
-            if (randomChance < this.chanceToQuarantine) {
-                this.simulation.dispatchEvent(
-                    new UpdateStateEvent(this.agentId, "Quarantined")
-                )
-                this.chanceToQuarantine = 10000
+        if (this.isQuarantineEnabled) {
+            this.timeUntilQuarantine -= deltaTime
+            if (this.timeUntilQuarantine <= 0) {
+                const randomChance = Math.random()
+                if (randomChance < this.chanceToQuarantine) {
+                    this.simulation.dispatchEvent(
+                        new UpdateStateEvent(this.agentId, "Quarantined")
+                    )
+                    this.chanceToQuarantine = 10000
+                }
             }
         }
+
     }
 }
 
@@ -226,7 +230,8 @@ export class Agent {
         private timeUntilRelease: number,
         private chanceToSurviveQuarantine: number,
         private timeToQuarantine: number,
-        private chanceToQuarantine: number
+        private chanceToQuarantine: number,
+        private isQuarantineEnabled: boolean
     ) {
         this.changeState(stateKind, "Healthy")
     }
@@ -286,7 +291,8 @@ export class Agent {
                     this.simulation,
                     this.id,
                     this.chanceToQuarantine,
-                    this.timeToQuarantine
+                    this.timeToQuarantine,
+                    this.isQuarantineEnabled
                 )
                 break
             case "InfectedWithoutSymptoms":
