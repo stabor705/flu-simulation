@@ -30,7 +30,7 @@ const startSimulation = (
         chanceToRecover: chanceToRecover,
         chanceToQuarantine: chanceToQuarantine,
         chanceToSurviveQuarantine: chanceToSurviveQuarantine,
-        isQuarantineEnabled: isQuarantineEnabled
+        isQuarantineEnabled: isQuarantineEnabled,
     })
 
     const boxHeight = 480
@@ -153,7 +153,7 @@ const isQuarantineEnabledInput = document.getElementById(
 if (formAppElement) {
     formAppElement.addEventListener("submit", (event) => {
         if (
-            !numOfAgentsInput || 
+            !numOfAgentsInput ||
             !numOfCommunitiesInput ||
             !infectionSpreadRadiusInput ||
             !maxInitialInfectedInput ||
@@ -170,7 +170,9 @@ if (formAppElement) {
         formAppElement.style.display = "none"
         const agentsPerCommunity = parseInt(numOfAgentsInput.value)
         const numberOfCommunities = parseInt(numOfCommunitiesInput.value)
-        const agentInfectionSpreadRadius = Number(infectionSpreadRadiusInput.value)
+        const agentInfectionSpreadRadius = Number(
+            infectionSpreadRadiusInput.value
+        )
         const maxInitialInfected = Number(maxInitialInfectedInput.value)
         const chanceToRecover = Number(chanceToRecoverInput.value)
         const chanceToQuarantine = Number(chanceToQuarantineInput.value)
@@ -179,7 +181,7 @@ if (formAppElement) {
         )
         const isQuarantineEnabled = isQuarantineEnabledInput?.checked ?? false
         startSimulation(
-            agentsPerCommunity, 
+            agentsPerCommunity,
             numberOfCommunities,
             agentInfectionSpreadRadius,
             maxInitialInfected,

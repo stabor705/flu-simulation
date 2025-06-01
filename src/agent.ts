@@ -106,7 +106,7 @@ class InfectedWithSymptomsAgentState extends InfectedAgentState {
             timeToNextStateChange,
             chanceToRecover,
             simulation,
-            agentId,
+            agentId
         )
     }
 
@@ -138,7 +138,6 @@ class InfectedWithSymptomsAgentState extends InfectedAgentState {
                 }
             }
         }
-
     }
 }
 

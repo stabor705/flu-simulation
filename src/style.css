@@ -124,7 +124,7 @@ main {
     cursor: pointer;
 }
 
-#form-app span{
+#form-app span {
     padding-top: 0.5em;
 }
 
@@ -136,7 +136,7 @@ main {
     padding-top: 1em;
 }
 
-.advanced-settings .field{
+.advanced-settings .field {
     margin: 0.5em;
 }
 
