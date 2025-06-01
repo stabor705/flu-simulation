@@ -104,6 +104,10 @@ export class Simulation extends EventTarget {
             const agent = this._agents[event.agentId]
             if (!agent) return
 
+            const oldState = agent.stateKind
+            const newState = event.newStateKind
+            console.log(`Old: ${oldState}\nNew: ${newState}`)
+
             agent.changeState(event.newStateKind)
             this.window?.dispatchEvent(
                 new AgentRedrawRequiredEvent(agent.id, agent.stateKind)

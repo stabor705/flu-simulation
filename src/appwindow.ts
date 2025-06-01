@@ -43,7 +43,6 @@ export class AppWindow extends EventTarget {
             .init({ width: width, height: height, background: 0xffffff })
             .then(() => {
                 const elementId = `simulation-window${id ? `-${id}` : ""}`
-                console.log(elementId)
                 document.getElementById(elementId)?.appendChild(this.app.canvas)
                 this.app.ticker.add(this.onTick.bind(this))
             })
