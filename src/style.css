@@ -1,28 +1,41 @@
-#app {
-    text-align: center;
+body {
+    font-family: "Inter", sans-serif;
+    width: 100vw;
+    height: 100vh;
+    margin: 0;
+    display: flex;
 }
 
-.simulation-window canvas {
-    border: 1px solid black;
-    border-radius: 0.5em;
-    padding: 1em;
+#app {
+    text-align: center;
+    height: 100%;
+    width: 100%;
+    display: flex;
+    flex-direction: column;
 }
 
 main {
-    display: inline-grid;
-    grid-template-columns: auto auto auto;
-    grid-gap: 1em;
+    flex-grow: 1;
 }
 
 .score {
-    position: fixed;
-    top: 10px;
-    left: 10px;
-    text-align: left;
+    display: flex;
+    justify-content: space-around;
+    padding: 1em;
+}
+
+.label {
+    font-size: 1.3rem;
+    display: flex;
+    flex-direction: column;
 }
 
 .infected-label {
     color: red;
+}
+
+#simulation-window canvas {
+    box-shadow: rgba(0, 0, 0, 0.24) 0px 3px 8px;
 }
 
 .infected-no-symptoms-label {
@@ -39,4 +52,90 @@ main {
 
 .dead-label {
     color: black;
+}
+
+.button {
+    font-size: 1.2rem;
+    padding: 0.5em;
+}
+
+.export-button {
+    background-color: #00caff;
+    border: none;
+    color: white;
+    border-radius: 0.5rem;
+}
+
+.restart-button {
+    background-color: white;
+    border: 1px solid #00caff;
+    color: #00caff;
+    border-radius: 0.5rem;
+}
+
+.controls {
+    padding: 0.5em;
+    display: flex;
+    gap: 1em;
+    align-items: center;
+    justify-content: center;
+}
+
+#form-app {
+    border: 1px solid #ccc;
+    border-radius: 1em;
+    padding: 2em;
+    margin: auto;
+    width: fit-content;
+    height: fit-content;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 1em;
+}
+
+#form-app form {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 0.5em;
+    width: fit-content;
+}
+
+#form-app input {
+    padding: 0.5em;
+    border-radius: 0.5em;
+    border: 1px solid #ccc;
+}
+
+.primary-button {
+    background-color: #00caff;
+    border: none;
+    color: white;
+    font-size: 1.1rem;
+    border-radius: 0.5rem;
+    padding: 0.3em 0.5em;
+}
+
+.primary-button {
+    background-color: #00a0d1;
+    cursor: pointer;
+}
+
+#form-app h1 {
+    margin: 0;
+}
+
+.field {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    width: 100%;
+    gap: 1em;
+}
+
+.form-buttons {
+    display: flex;
+    justify-content: flex-end;
+    width: 100%;
 }
