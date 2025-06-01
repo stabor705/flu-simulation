@@ -169,3 +169,7 @@ footer svg {
 .attribution {
     text-align: center;
 }
+
+#buttons-panel {
+    margin-right: 15px;
+}
