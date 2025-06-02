@@ -111,11 +111,11 @@ main {
     width: fit-content;
 }
 
-#form-app input {
+#form-app input:not([type="checkbox"]) {
     padding: 0.5em;
     border-radius: 0.5em;
     border: 1px solid #ccc;
-    width: 7em;
+    min-width: 160px;
 }
 
 #form-app input[type="checkbox"] {
@@ -133,11 +133,8 @@ main {
 }
 
 .advanced-settings {
+    width: 100%;
     padding-top: 1em;
-}
-
-.advanced-settings .field {
-    margin: 0.5em;
 }
 
 .primary-button {
