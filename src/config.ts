@@ -5,14 +5,15 @@ export class SimulationConfig {
     infectionSpreadInterval: number
     maxInitialInfected: number
     agentMovementSpeed: number
-    incubationPeriod: number
-    ilnessDuration: number
+    incubationPeriod: [number, number]
+    ilnessDuration: [number, number]
     chanceToRecover: number
     timeToRemoveDead: number
     timeToQuarantine: number
     chanceToQuarantine: number
     timeToReleaseFromQuarantine: number
     chanceToSurviveQuarantine: number
+    isQuarantineEnabled: boolean
 
     constructor({
         agentNum = 10,
@@ -21,14 +22,15 @@ export class SimulationConfig {
         agentMovementSpeed = 0.1,
         maxInitialInfected = 0.1,
         infectionSpreadInterval = 500,
-        incubationPeriod = 3000,
-        ilnessDuration = 10000,
+        incubationPeriod = [2000, 4000],
+        ilnessDuration = [8000, 12000],
         chanceToRecover = 0.96,
         timeToRemoveDead = 5000,
         timeToQuarantine = 1000,
         chanceToQuarantine = 0.8,
         timeToReleaseFromQuarantine = 5000,
         chanceToSurviveQuarantine = 0.96,
+        isQuarantineEnabled = false,
     }: Partial<SimulationConfig> = {}) {
         this.agentNum = agentNum
         this.agentInfectionSpreadRadius = agentInfectionSpreadRadius
@@ -44,5 +46,6 @@ export class SimulationConfig {
         this.chanceToQuarantine = chanceToQuarantine
         this.timeToReleaseFromQuarantine = timeToReleaseFromQuarantine
         this.chanceToSurviveQuarantine = chanceToSurviveQuarantine
+        this.isQuarantineEnabled = isQuarantineEnabled
     }
 }

@@ -72,7 +72,8 @@ export class Simulation extends EventTarget {
                     config.timeToReleaseFromQuarantine,
                     config.chanceToSurviveQuarantine,
                     config.timeToQuarantine,
-                    config.chanceToQuarantine
+                    config.chanceToQuarantine,
+                    config.isQuarantineEnabled
                 )
                 return [agent.id, agent]
             })

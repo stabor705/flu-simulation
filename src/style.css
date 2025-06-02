@@ -112,10 +112,30 @@ main {
     width: fit-content;
 }
 
-#form-app input {
+#form-app input:not([type="checkbox"]) {
     padding: 0.5em;
     border-radius: 0.5em;
     border: 1px solid #ccc;
+    min-width: 160px;
+}
+
+#form-app input[type="checkbox"] {
+    width: auto;
+    transform: scale(1.5);
+    cursor: pointer;
+}
+
+#form-app span {
+    padding-top: 0.5em;
+}
+
+#form-app .field {
+    padding-top: 0.5em;
+}
+
+.advanced-settings {
+    width: 100%;
+    padding-top: 1em;
 }
 
 .primary-button {
@@ -169,4 +189,8 @@ footer svg {
 
 .attribution {
     text-align: center;
+}
+
+#buttons-panel {
+    margin-right: 15px;
 }

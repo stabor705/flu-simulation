@@ -15,10 +15,16 @@ const statisticsUpdateInterval = 100
 
 const startSimulation = (
     agentsPerCommunity: number,
-    numberOfCommunities: number
+    numberOfCommunities: number,
+    maxInitialInfected: number,
+    chanceToRecover: number,
+    isQuarantineEnabled: boolean
 ) => {
     const config = new SimulationConfig({
         agentNum: agentsPerCommunity,
+        maxInitialInfected: maxInitialInfected,
+        chanceToRecover: chanceToRecover,
+        isQuarantineEnabled: isQuarantineEnabled,
     })
 
     const boxHeight = 480
@@ -119,10 +125,24 @@ const numOfAgentsInput = document.getElementById(
 const numOfCommunitiesInput = document.getElementById(
     "number-of-communities"
 ) as HTMLInputElement | undefined
+const maxInitialInfectedInput = document.getElementById(
+    "max-initial-infected"
+) as HTMLInputElement | null
+const chanceToRecoverInput = document.getElementById(
+    "chance-to-recover"
+) as HTMLInputElement | null
+const isQuarantineEnabledInput = document.getElementById(
+    "quarantine-checkbox"
+) as HTMLInputElement | null
 
 if (formAppElement) {
     formAppElement.addEventListener("submit", (event) => {
-        if (!numOfAgentsInput || !numOfCommunitiesInput) {
+        if (
+            !numOfAgentsInput ||
+            !numOfCommunitiesInput ||
+            !maxInitialInfectedInput ||
+            !chanceToRecoverInput
+        ) {
             return
         }
         event?.preventDefault()
@@ -132,7 +152,16 @@ if (formAppElement) {
         formAppElement.style.display = "none"
         const agentsPerCommunity = parseInt(numOfAgentsInput.value)
         const numberOfCommunities = parseInt(numOfCommunitiesInput.value)
-        startSimulation(agentsPerCommunity, numberOfCommunities)
+        const maxInitialInfected = Number(maxInitialInfectedInput.value)
+        const chanceToRecover = Number(chanceToRecoverInput.value)
+        const isQuarantineEnabled = isQuarantineEnabledInput?.checked ?? false
+        startSimulation(
+            agentsPerCommunity,
+            numberOfCommunities,
+            maxInitialInfected,
+            chanceToRecover,
+            isQuarantineEnabled
+        )
     })
 }
 

@@ -56,7 +56,7 @@ abstract class InfectedAgentState extends AgentState {
 
     constructor(
         private readonly infectionSpreadInterval: number,
-        timeToNextStateChange: number,
+        timeRangeToNextStateChange: [number, number],
         protected chanceToRecover: number,
         protected simulation: Simulation,
         protected agentId: string
@@ -64,7 +64,10 @@ abstract class InfectedAgentState extends AgentState {
         super()
 
         this.timeUntilNextInfectionSpread = infectionSpreadInterval
-        this.timeToNextStateChange = timeToNextStateChange
+        const min = timeRangeToNextStateChange[0]
+        const max = timeRangeToNextStateChange[1]
+        this.timeToNextStateChange =
+            Math.floor(Math.random() * (max - min + 1)) + min
     }
 
     abstract changeState(): any
@@ -90,12 +93,13 @@ class InfectedWithSymptomsAgentState extends InfectedAgentState {
 
     constructor(
         infectionSpreadInterval: number,
-        timeToNextStateChange: number,
+        timeToNextStateChange: [number, number],
         protected chanceToRecover: number,
         protected simulation: Simulation,
         protected agentId: string,
         private chanceToQuarantine: number,
-        private timeUntilQuarantine: number
+        private timeUntilQuarantine: number,
+        private isQuarantineEnabled: boolean
     ) {
         super(
             infectionSpreadInterval,
@@ -122,14 +126,16 @@ class InfectedWithSymptomsAgentState extends InfectedAgentState {
     tick(deltaTime: number) {
         super.tick(deltaTime)
 
-        this.timeUntilQuarantine -= deltaTime
-        if (this.timeUntilQuarantine <= 0) {
-            const randomChance = Math.random()
-            if (randomChance < this.chanceToQuarantine) {
-                this.simulation.dispatchEvent(
-                    new UpdateStateEvent(this.agentId, "Quarantined")
-                )
-                this.chanceToQuarantine = 10000
+        if (this.isQuarantineEnabled) {
+            this.timeUntilQuarantine -= deltaTime
+            if (this.timeUntilQuarantine <= 0) {
+                const randomChance = Math.random()
+                if (randomChance < this.chanceToQuarantine) {
+                    this.simulation.dispatchEvent(
+                        new UpdateStateEvent(this.agentId, "Quarantined")
+                    )
+                    this.chanceToQuarantine = 10000
+                }
             }
         }
     }
@@ -140,7 +146,7 @@ class InfectedWithoutSymptomsAgentState extends InfectedAgentState {
 
     constructor(
         infectionSpreadInterval: number,
-        incubationTime: number,
+        incubationTime: [number, number],
         changceToRecover: number,
         simulation: Simulation,
         agentId: string
@@ -216,14 +222,15 @@ export class Agent {
         private infectionSpreadInterval: number,
         public radius: number,
         public infectionSpreadRadius: number,
-        public incubationPeriod: number,
-        public ilnessDuration: number,
+        public incubationPeriod: [number, number],
+        public ilnessDuration: [number, number],
         public chanceToRecover: number,
         public timeToRemoveDead: number,
         private timeUntilRelease: number,
         private chanceToSurviveQuarantine: number,
         private timeToQuarantine: number,
-        private chanceToQuarantine: number
+        private chanceToQuarantine: number,
+        private isQuarantineEnabled: boolean
     ) {
         this.changeState(stateKind, "Healthy")
     }
@@ -283,7 +290,8 @@ export class Agent {
                     this.simulation,
                     this.id,
                     this.chanceToQuarantine,
-                    this.timeToQuarantine
+                    this.timeToQuarantine,
+                    this.isQuarantineEnabled
                 )
                 break
             case "InfectedWithoutSymptoms":
