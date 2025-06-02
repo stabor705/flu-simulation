@@ -43,7 +43,7 @@ const startSimulation = (
     const windowHeight = simulationWindowElem?.clientHeight
     const appWindow = new AppWindow(
         windowWidth ?? 720,
-        windowHeight ? windowHeight - 30 : 360,
+        windowHeight ? windowHeight - 50 : 360,
         simulations,
         [gridSide, gridSide],
         boxHeight,
